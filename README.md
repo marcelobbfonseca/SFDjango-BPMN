@@ -1,5 +1,5 @@
-# SMMS
+# BPMN
 
-About privacy policy, all data required so far is of public domain and will be used for educational porposes only.
+This project implements part of a semantic framework directed to Business Process Management Notation.
 
 python -c "import nltk; nltk.download('punkt')"
