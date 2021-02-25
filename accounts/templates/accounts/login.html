@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="app">
+    {% if not user.is_authenticated %}
+      <div class="login-page">
+        <h2>Faça seu login</h2>
+        <form method="POST">
+          {% csrf_token %}
+          {% for field in form %}
+            <div>
+              {{ field.label_tag }}
+              {{ field }}
+              {{ field.errors }}
+            </div>
+            <br>
+          {% endfor %}
+          <div>
+            <button type="submit" class="link">Entrar</button>
+          </div>
+          <div><p>Esqueceu a senha? <a class="btn-link" href="{% url 'password_reset' %}">Nova senha</a> </p></div>
+        </form>
+      </div>
+    {% else %}
+      <h2>Você já está logado!</h2>
+    {% endif %}
+    <div class="endPage">{{ form.non_field_errors }} </div>
+  </div>
+{% endblock %}
+

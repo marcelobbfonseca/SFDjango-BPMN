@@ -1,0 +1,25 @@
+{% extends "accounts/dashboard.html" %}
+
+{% block dashboard_content %}
+  <div>
+    <div class="news-form">
+      <h3>Informe os dados do usuário</h3>
+        <form method="post">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+          {% for field in form %}
+            <div>
+              {{ field.label_tag }}
+              {{ field }}
+              {{ field.errors }}
+            </div>
+            <br>
+          {% endfor %}
+          <div>
+            <button class="link" type="submit">Salvar</button>
+          </div>
+        </form>
+    </div>
+    <div class="endPage"></div>
+  </div>
+{% endblock %}

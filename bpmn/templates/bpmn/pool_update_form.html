@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load fontawesome_5 %}
+
+{% block content %}
+  <div class="news-form">
+    <center><h1>Atualização de pool</h1></center>
+    <p> <a class="back-link" href="{% url 'pool_list' %}">{% fa5_icon 'chevron-left' 'fas' %} Voltar</a> </p>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+          <div>
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+          </div>
+          <br>
+        {% endfor %}
+        <div>
+          <button class="link" type="submit">Atualizar</button>
+          <a class="link-outline" href="{% url 'pool_delete_confirmation' pool.id %}">Remover</a>
+      </form>
+  </div>
+  <div class="endPage"></div>
+{% endblock %}

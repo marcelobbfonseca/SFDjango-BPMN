@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2 class="section-title">Processos</h2>
+  <div class="panel-links">
+    <a class="link" href="{% url 'pool_list' %}">Pools</a>
+    <a class="link" href="{% url 'lane_list' %}">Raias</a>
+    <a class="link" href="{% url 'event_list' %}">Eventos</a>
+    <a class="link" href="{% url 'activity_type_list' %}">Tipos de atividades</a>
+    <a class="link" href="{% url 'activity_list' %}">Atividades</a>
+    <a class="link" href="{% url 'sequence_list' %}">Sequências</a>
+    <a class="link" href="{% url 'flow_list' %}">Fluxo</a>
+    <a class="link" href="{% url 'process_type_list' %}">Tipos de processos</a>
+    <a class="link" href="{% url 'process_list' %}">Processos</a>
+    <a class="link" href="{% url 'dashboard' %}">Dashboard</a>
+  </div>
+  <center><h1>Processos</h1></center>
+  <div class="news-list">
+    <a class="link" href="{% url 'process_create_form' %}"><b>Novo processo</b></a>
+    <hr>
+    <ul>
+      {% for process in processes %}
+          <li class="news-management">
+            <a class="link-outline" href="{% url 'process_update_form' process.id %}"><b>Editar</b></a>
+            <span class="title">Processo: {{ process }} - {{ process.name }} | Estado: {{ process.status }} | Atividade atual: {{ process.current }}</span>
+          </li>
+          <hr>
+      {% endfor %}
+    </ul>
+  </div>
+  <div style="height: 100px;"></div>
+{% endblock %}

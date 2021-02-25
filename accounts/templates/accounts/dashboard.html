@@ -1,0 +1,38 @@
+{% extends "accounts/base_dashboard.html" %}
+
+{% block content %}
+  {% if request.path == "/usuarios/" %}
+    <h2 class="section-title">Usuários</h2>
+  {% else %}
+    <h2 class="section-title">Painel de Controle</h2>
+  {% endif %}
+  <div class="panel-links">
+    <a class="link" href="{% url 'dashboard' %}">Meu Painel</a>
+    {% if perms.auth.view_user %}
+      <a class="link" href="{% url 'users' %}">Usuários</a>
+    {% endif %}
+    <a class="link" href="{% url 'groups' %}">Grupos</a>
+    <a class="link" href="{% url 'edit_password' %}">Editar Senha</a>
+    <a class="link" href="{% url 'process_list' %}">BPMN</a>
+  </div>
+  {% block dashboard_content %}
+    <div class="active-user">
+      <h3>Você está logado como:</h3>
+      <p class="label">Usuário:</p>
+      <p>{{ user.first_name }}</p>
+      <p class="label">E-mail:</p>
+      <p>{{ user.email }}</p>
+      <p class="label">Perfil:</p>
+      <p>
+      {% if not user.is_superuser %}
+        {% for p in perfil %}
+         {{p.name}} 
+        {% endfor %}
+        </p>
+        {% else %}
+          Administrador
+      {% endif%} </p>
+    </div>
+  {% endblock %}
+  <div class="endPage"></div>
+{% endblock %}

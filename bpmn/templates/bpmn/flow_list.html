@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2 class="section-title">Fluxos</h2>
+  <div class="panel-links">
+    <a class="link" href="{% url 'pool_list' %}">Pools</a>
+    <a class="link" href="{% url 'lane_list' %}">Raias</a>
+    <a class="link" href="{% url 'event_list' %}">Eventos</a>
+    <a class="link" href="{% url 'activity_type_list' %}">Tipos de atividades</a>
+    <a class="link" href="{% url 'activity_list' %}">Atividades</a>
+    <a class="link" href="{% url 'sequence_list' %}">Sequências</a>
+    <a class="link" href="{% url 'flow_list' %}">Fluxo</a>
+    <a class="link" href="{% url 'process_type_list' %}">Tipos de processos</a>
+    <a class="link" href="{% url 'process_list' %}">Processos</a>
+    <a class="link" href="{% url 'dashboard' %}">Dashboard</a>
+  </div>
+  <center><h1>Fluxos</h1></center>
+  <div class="news-list">
+    <a class="link" href="{% url 'flow_create_form' %}"><b>Novo fluxo</b></a>
+    <hr>
+    <ul>
+      {% for flow in flows %}
+          <li class="news-management">
+            <a class="link-outline" href="{% url 'flow_update_form' flow.id %}"><b>Editar</b></a>
+            <span class="title">{{ flow }}</span>
+          </li>
+          <hr>
+      {% endfor %}
+    </ul>
+  </div>
+  <div style="height: 100px;"></div>
+{% endblock %}

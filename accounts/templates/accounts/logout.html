@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="app">
+    <div class="login-page">
+      {% if not user.is_authenticated %}
+        <p><h2>Sessão encerrada com sucesso.</h2></p>
+      {% else %}
+        <h2>Você continua logado!</h2>
+      {% endif %}
+      <div>
+        <a class="link" type="button" href="{% url 'home' %}"><b>Voltar à tela inicial</b></a>
+      </div>
+    </div>
+  </div>
+  <div class="endPage"></div>
+{% endblock %}
+

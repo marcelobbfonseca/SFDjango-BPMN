@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="app">
+      <div style="height: 100px;"></div>
+        <center><h1>Remoção de tipo de atividade</h1></center>
+        <p> <a class="btn" href="{% url 'activity_type_list' %}">Cancelar</a> </p>
+        <form method="post">
+          {% csrf_token %}
+          <p><b>Você está certo de que quer excluir o tipo de atividade "{{ object.name }}" ?</b></p>
+          <input class="btn" type="submit" value="Confirmar">
+        </form>
+      <div style="height: 100px;"></div>
+    </div>
+{% endblock %}

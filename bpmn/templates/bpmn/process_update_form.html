@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load fontawesome_5 %}
+
+{% block content %}
+  <div class="news-form">
+    <p> <a class="back-link" href="{% url 'process_list' %}">{% fa5_icon 'chevron-left' 'fas' %} Voltar</a> </p>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+          <div>
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+          </div>
+          <br>
+        {% endfor %}
+        {{ process.possible_actions }}
+        <br>
+        <br>
+        <div>
+          <button class="link" type="submit">Atualizar</button>
+          <a class="link-outline" href="{% url 'process_delete_confirmation' process.id %}">Remover</a>
+      </form>
+  </div>
+  <div class="endPage"></div>
+{% endblock %}

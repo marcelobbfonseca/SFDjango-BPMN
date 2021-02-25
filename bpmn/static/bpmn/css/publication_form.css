@@ -1,0 +1,88 @@
+.title {
+
+margin-left: 15%;
+margin-right: 15%;
+margin-top: 10px;
+width: 70%;    
+font-size: 12pt;
+text-align: center;
+top: 50px;
+
+}
+
+.sutian {
+    
+margin-left: 15%;
+margin-right: 15%;
+margin-top: 10px;
+width: 70%;    
+font-size: 12pt;
+text-align: center;
+
+}
+
+.django-ckeditor-widget{
+
+margin-left: 15% !important;
+margin-right: 15% !important;
+width: 70% !important;    
+
+}
+
+.text{
+
+margin-left: 10% !important;
+margin-right: 10% !important;
+margin-top: 10px;
+width: 80% !important; 
+text-align: justify;   
+
+}
+
+label[for=id_editoria]{
+
+margin-left: 26% !important;
+
+}
+
+#id_editoria{
+
+width: 10% !important;
+
+}
+
+#id_creators{
+
+width: 30% !important;
+margin-right: 18% !important;
+
+}
+
+#id_concept_to_add{
+
+margin-left: 10px !important;
+
+}
+
+#id_add_concept_btn{
+
+margin-left: 5px !important;
+margin-right: 5% !important;
+
+}
+
+#id_save_btn{
+
+margin-left: 77% !important;
+margin-right: 10px !important;
+
+}
+
+#id_publish_btn{
+
+margin-left: 10px !important;
+
+}
+
+
+

@@ -1,0 +1,32 @@
+{% extends "accounts/dashboard.html" %}
+
+{% block dashboard_content %}
+  <ul class="users-list">
+    <a class="link" href="{% url 'new_user' %}"><b>Novo Usuário</b></a>
+    <hr>
+    {% for user in users|dictsort:"first_name" %}
+      <li>
+        {% if not user.is_superuser %}
+          <span><a class="link-outline" href="{% url 'update_user' user.id %}"><b>Editar</b></a></span>
+        {% endif%}
+        <span class="name"> {{ user.first_name }} {{ user.last_name }} </span>
+        <p><b>Usuário:</b> {{ user }}</p>
+        <p><b>Email:</b> {{ user.email }} </p>
+        {% if user.is_active%}
+          <p><b>Status:</b> Ativo</p>
+        {% else %}
+          <p><b>Status:</b> Desativado</p>
+        {% endif %}
+        {% if not user.is_superuser %}
+          {% for p in user.groups.all %}
+            <span><b>Tipo de usuário:</b> {{p.name}} </span>
+            {% empty %}
+          {% endfor %}
+        {% else %}
+          <span><b>Tipo de usuário:</b> Administrador</span>
+        {% endif%}
+      </li>
+      <hr>
+    {% endfor %}
+  </ul>
+{% endblock %}
