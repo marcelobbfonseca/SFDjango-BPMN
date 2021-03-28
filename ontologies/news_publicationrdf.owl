@@ -1,0 +1,294 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication"
+     xml:base="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:news_publication="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication">
+        <owl:versionIRI rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication/0.1.0"/>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#aprova -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#aprova">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#chefe_de_reportagem"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#editor"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#define -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#define">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#secretário_de_redação"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#pauta"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#designa -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#designa">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#editor"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#repórter"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#distribui -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#distribui">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#chefe_de_reportagem"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#pauta"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#produz -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#produz">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#repórter"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#publica -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#publica">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#editor"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#recebe -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#recebe">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#editor"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#pauta"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#reescreve -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#reescreve">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#repórter"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#revisa -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#revisa">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#editor"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#topObjectProperty -->
+
+    <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#topObjectProperty">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+    </rdf:Description>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#nome -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#nome">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#Material"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#Pessoa"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#Material -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#Material"/>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#Pessoa -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#Pessoa"/>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#chefe_de_reportagem -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#chefe_de_reportagem">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#Pessoa"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#editor -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#editor">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#Pessoa"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#Material"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#pauta -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#pauta">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#Material"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#repórter -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#repórter">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#Pessoa"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#secretário_de_redação -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#secretário_de_redação">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#Pessoa"/>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#chefe_de_reportagem_01 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#chefe_de_reportagem_01">
+        <rdf:type rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#chefe_de_reportagem"/>
+        <news_publication:aprova rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria_01"/>
+        <news_publication:distribui rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#pauta_01"/>
+        <news_publication:nome>chefe de reportagem genérico</news_publication:nome>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#editor_01 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#editor_01">
+        <rdf:type rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#editor"/>
+        <news_publication:aprova rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria_01"/>
+        <news_publication:designa rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#reporter_01"/>
+        <news_publication:publica rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria_01"/>
+        <news_publication:recebe rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#pauta_01"/>
+        <news_publication:revisa rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria_01"/>
+        <news_publication:nome>Editor genérico</news_publication:nome>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria_01 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria_01">
+        <rdf:type rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria"/>
+        <news_publication:nome>matéria genérica</news_publication:nome>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#pauta_01 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#pauta_01">
+        <rdf:type rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#pauta"/>
+        <news_publication:nome>pauta genérica</news_publication:nome>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#reporter_01 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#reporter_01">
+        <rdf:type rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#repórter"/>
+        <news_publication:produz rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria_01"/>
+        <news_publication:reescreve rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#matéria_01"/>
+        <news_publication:nome>reporter genérico</news_publication:nome>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#secretário_de_redação_01 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#secretário_de_redação_01">
+        <rdf:type rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#secretário_de_redação"/>
+        <news_publication:define rdf:resource="http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#pauta_01"/>
+        <news_publication:nome>secretário genérico</news_publication:nome>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi -->
+
