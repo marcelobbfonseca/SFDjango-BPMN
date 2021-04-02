@@ -1,8 +1,24 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 # BPMN
 
 This project implements part of a semantic framework directed to Business Process Management Notation.
 
-Configuração
+## Configuração
+
+### Usando Docker
+
+Requires Docker and docker-compose installed. 
+1. [Download docker here](https://www.docker.com/products/docker-desktop) 
+2. [Download and Install docker-compose here](https://docs.docker.com/compose/install/)
+
+In root directory run ```docker-compose up```. App will start and run in port localhost:3000
+
+#### Debug
+
+Run bash inside the application container. Run ```docker exec -it sfdjango_djangoapp_1 /bin/bash``` in another terminal while the container is running.
+
+### Sem Docker
 
 Passo 1: Instalação do Python 3.7
     Windows: Certifique-se que se trata da versão de 64 bits e escolha no instalador a opção de inclusão 
