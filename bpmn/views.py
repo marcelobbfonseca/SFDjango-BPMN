@@ -388,6 +388,10 @@ class ProcessView(TemplateView):
        
         return context
 
+class ProcessModelingView(TemplateView):
+    template_name = "bpmn/process_modeling.html"
+    
+
 class ProcessCreate(FormView):
 
     template_name = "bpmn/process_create_form.html"

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/bpmn-js@8.2.2/dist/assets/diagram-js.css" />
+<link rel="stylesheet" href="https://unpkg.com/bpmn-js@8.2.2/dist/assets/bpmn-font/css/bpmn.css" />
+<br><br><br>
+<section class="container-fluid">
+
+    <div class="row">
+        <div class="col">
+            <h1>Modelagem de processo</h1>
+            <button type="button" class="btn btn-secondary">Abrir novo</button>
+            <button type="button" class="btn btn-success">Salvar</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div id="canvas"  style="height: 600px;"></div>
+        </div>
+    </div>
+</section>
+    
+
+<script src="https://unpkg.com/bpmn-js@8.2.2/dist/bpmn-modeler.development.js"></script>
+<script>
+
+var bpmn = function() { 
+    return new BpmnJS({
+      container: '#canvas'
+    });
+}
+
+let emptyDiagram = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" targetNamespace="http://bpmn.io/schema/bpmn" id="Definitions_1">
+  <bpmn:process id="Process_1" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_1"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="173.0" y="102.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>`
+
+try {
+
+    bpmn().importXML(emptyDiagram);
+
+  console.log('success!');
+  viewer.get('canvas').zoom('fit-viewport');
+} catch (err) {
+
+  console.error('something went wrong:', err);
+}
+</script>
+{% endblock %}

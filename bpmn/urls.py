@@ -40,4 +40,5 @@ urlpatterns = [
     path('process_create_form/', ProcessCreate.as_view(), name='process_create_form'),
     path('process_update_form/<int:pk>', ProcessUpdate.as_view(), name='process_update_form'),
     path('process_delete_confirmation/<int:pk>', ProcessDelete.as_view(), name='process_delete_confirmation'),
+    path('process-modeling/', ProcessModelingView.as_view(), name="process_modeling")
 ]
