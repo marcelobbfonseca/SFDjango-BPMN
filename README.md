@@ -58,3 +58,8 @@ Passo 9: Teste a intalação do django rodando o servidor local.
     Comando: python manage.py runserver
 
 python -c "import nltk; nltk.download('punkt')"
+
+
+### Seed Database
+
+python3 manage.py shell < seed.py
