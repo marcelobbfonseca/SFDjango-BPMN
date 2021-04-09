@@ -4,14 +4,16 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" href="https://unpkg.com/bpmn-js@8.2.2/dist/assets/diagram-js.css" />
 <link rel="stylesheet" href="https://unpkg.com/bpmn-js@8.2.2/dist/assets/bpmn-font/css/bpmn.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
 <br><br><br>
-<section class="container-fluid">
+<section id="app" class="container-fluid">
 
     <div class="row">
         <div class="col">
             <h1>Modelagem de processo</h1>
-            <button type="button" class="btn btn-secondary">Abrir novo</button>
-            <button type="button" class="btn btn-success">Salvar</button>
+            <button id="js-create-diagram" type="button" class="btn btn-secondary">Abrir novo</button>
+            <button id="js-download-diagram" type="button" class="btn btn-success mybtn">Salvar</button>
+            <button id="js-download-svg" type="button" class="btn btn-success mybtn">Salvar Imagem</button>
         </div>
     </div>
 
@@ -19,42 +21,163 @@
         <div class="col">
             <div id="canvas"  style="height: 600px;"></div>
         </div>
+        <div class="col-3">
+          <h3>Suggestions:</h3>
+          <ul v-for="suggestion in suggestions" :key="suggestion">
+            <li><a href="#">[[suggestion]]</a></li>
+          </ul>
+        </div>
     </div>
 </section>
     
-
 <script src="https://unpkg.com/bpmn-js@8.2.2/dist/bpmn-modeler.development.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
 <script>
 
-var bpmn = function() { 
-    return new BpmnJS({
+var app = new Vue({
+  delimiters: ['[[', ']]'],
+  el: '#app',
+  data: {
+    message: 'Hello Vue!',
+    diagramXML: `<?xml version="1.0" encoding="UTF-8"?>
+      <bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" targetNamespace="http://bpmn.io/schema/bpmn" id="Definitions_1">
+        <bpmn:process id="Process_1" isExecutable="false">
+          <bpmn:startEvent id="StartEvent_1"/>
+        </bpmn:process>
+        <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+          <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+            <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+              <dc:Bounds height="36.0" width="36.0" x="173.0" y="102.0"/>
+            </bpmndi:BPMNShape>
+          </bpmndi:BPMNPlane>
+        </bpmndi:BPMNDiagram>
+      </bpmn:definitions>`,
+    container: null,
+    modeler: null,
+    suggestions:[
+      'Apura pauta',
+      'Revisa matéria',
+      'Reescreve matéria'
+    ],
+    options:{}
+  },
+  mounted(){
+    this.container = $('#canvas')
+    this.modeler = $('#canvas')
+    this.modeler = new BpmnJS({
       container: '#canvas'
     });
-}
+    this.createNewDiagram()
+    this.setupDragDrop()
+  },
+  methods:{
+    createNewDiagram(){
+      this.openDiagram(this.diagramXML)
+    },
 
-let emptyDiagram = `<?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" targetNamespace="http://bpmn.io/schema/bpmn" id="Definitions_1">
-  <bpmn:process id="Process_1" isExecutable="false">
-    <bpmn:startEvent id="StartEvent_1"/>
-  </bpmn:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="173.0" y="102.0"/>
-      </bpmndi:BPMNShape>
-    </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
-</bpmn:definitions>`
+    async openDiagram(xml){
+      try {
+        await this.modeler.importXML(xml);
+        this.container
+          .removeClass('with-error')
+          .addClass('with-diagram');
+      } catch (err) {
 
-try {
+        this.container
+          .removeClass('with-diagram')
+          .addClass('with-error');
+        this.container.find('.error pre').text(err.message);
 
-    bpmn().importXML(emptyDiagram);
+        console.error(err);
+      }
+    },
 
-  console.log('success!');
-  viewer.get('canvas').zoom('fit-viewport');
-} catch (err) {
+    async saveXML(){
+      try {
+        const diagram = {xml: null, svg: null}
+        diagram.xml = await modeler.saveXML({ format: true });
+        diagram.svg = await modeler.saveSVG();
+        setEncoded($('#js-download-diagram'), 'diagram.bpmn', xml);
+        setEncoded($('#js-download-svg'), 'diagram.svg', svg);
+        axios.post('/', diagram).then(response => {
 
-  console.error('something went wrong:', err);
-}
+        }).catch(err=>{
+          console.log({err})
+        })
+      } catch (err) {
+        console.error('Error happened saving diagram: ', err);
+      }
+    },
+
+    setEncoded(link, name, data) {
+      let encodedData = encodeURIComponent(data);
+      if (data) {
+        link.addClass('active').attr({
+          'href': 'data:application/bpmn20-xml;charset=UTF-8,' + encodedData,
+          'download': name
+        });
+      } else {
+        link.removeClass('active');
+      }
+    },
+    registerFileDrop() {
+
+      function handleFileSelect(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        var files = e.dataTransfer.files;
+
+        var file = files[0];
+
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+
+          var xml = e.target.result;
+
+          this.openDiagram(xml);
+        };
+
+        reader.readAsText(file);
+      }
+
+      function handleDragOver(e) {
+        e.stopPropagation()
+        e.preventDefault()
+
+        e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+      }
+
+      this.container.get(0).addEventListener('dragover', handleDragOver, false);
+      this.container.get(0).addEventListener('drop', handleFileSelect, false);
+    },
+    setupDragDrop(){
+      if (!window.FileList || !window.FileReader) {
+        window.alert(
+          'Looks like you use an older browser that does not support drag and drop. ' +
+          'Try using Chrome, Firefox or the Internet Explorer > 10.');
+      } else {
+        this.registerFileDrop();
+      }
+    },
+  } //methods
+
+}) //app
+
+$(function() {
+  document.getElementById('canvas').addEventListener('click', function(element){
+    if(element.target.className === "entry bpmn-icon-task" || element.target.className === "djs-direct-editing-content")
+    {
+      axios.post('/ontology-suggestion', {role: 'reporter'}).then(response => {
+        app.suggestions = response.data.suggestions
+      }).catch( err => {
+        console.error({err})
+      })
+
+    }
+  });
+});
+
 </script>
 {% endblock %}
