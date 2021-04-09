@@ -2,12 +2,14 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
+from django.views.generic import View
 from django.views.generic.edit import UpdateView, DeleteView, FormView
 from .models import Activity, ActivityType, Process, ProcessType, Pool, Lane, Event, Sequence, Flow
 from .forms import ActivityForm, ActivityTypeForm, ProcessForm, ProcessTypeForm
 from .forms import PoolForm, LaneForm, EventForm, SequenceForm, FlowForm, ProcessUpdateForm
 
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 ####################################### Activity type views #######################################
 
 class ActivityTypeView(TemplateView):
@@ -391,6 +393,20 @@ class ProcessView(TemplateView):
 class ProcessModelingView(TemplateView):
     template_name = "bpmn/process_modeling.html"
     
+
+import json
+
+@method_decorator(csrf_exempt, name='dispatch')
+class OntologySuggestionView(View):
+
+    def post(self,request, *args, **kwargs):
+        import pdb; pdb.set_trace();
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        content = body['content']
+        # open static ontology
+        # Sparq query
+        return HttpResponse(content, content_type="application/json")
 
 class ProcessCreate(FormView):
 
