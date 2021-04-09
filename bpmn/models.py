@@ -88,6 +88,7 @@ class ActivityType(models.Model):
         return 'Activity@' + change_name_casing(self.name)
 
 ####################################### Instances of structures #######################################
+    
 
 class Process(models.Model):
 
@@ -177,7 +178,22 @@ class Sequence(models.Model):
 
         return self.get_current_state() + ' --> ' + ' or '.join(self.get_next_opts())
 
+
+
+class Diagram(models.Model):
+    name = models.CharField(max_length=255, default='')
+    xml = models.TextField(max_length=255, default='')
+    svg = models.TextField(max_length=255, default='')
+    process = models.OneToOneField(Process, on_delete=models.SET_NULL, default=None, null=True, blank=True)
+    def __str__(self):
+        return "Diagram %s" % self.name
+
+
 ################################## Functions to manipulate process update ##################################
+
+
+
+
 
 def get_process_init(process):
 
