@@ -22,7 +22,7 @@
             <div id="canvas"  style="height: 600px;"></div>
         </div>
         <div class="col-3">
-          <h3>Suggestions:</h3>
+          <h3>Sugestões: [[author]]</h3>
           <ul v-for="suggestion in suggestions" :key="suggestion">
             <li><a href="#">[[suggestion]]</a></li>
           </ul>
@@ -38,6 +38,7 @@ var app = new Vue({
   delimiters: ['[[', ']]'],
   el: '#app',
   data: {
+    author: '',
     message: 'Hello Vue!',
     diagramXML: `<?xml version="1.0" encoding="UTF-8"?>
       <bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" targetNamespace="http://bpmn.io/schema/bpmn" id="Definitions_1">
@@ -54,12 +55,31 @@ var app = new Vue({
       </bpmn:definitions>`,
     container: null,
     modeler: null,
-    suggestions:[
-      'Apura pauta',
-      'Revisa matéria',
-      'Reescreve matéria'
-    ],
-    options:{}
+    suggest:{
+      reporter:[
+        'produz matéria',
+        'reescreve matéria'
+      ],
+      editor:[
+        'designa reporter',
+        'revisa matéria',
+        'publica matéria',
+        'recebe pauta'
+      ],
+      'chefe de reportagem':[
+        'distribui pauta',
+        'aprova matéria'
+      ],
+      'secretario de redacao':[
+        'distribui pauta',
+        'define pauta',
+      ],
+    }
+  },
+  computed:{
+    suggestions(){
+      return this.suggest[this.author]
+    }
   },
   mounted(){
     this.container = $('#canvas')
@@ -169,12 +189,13 @@ $(function() {
   document.getElementById('canvas').addEventListener('click', function(element){
     if(element.target.className === "entry bpmn-icon-task" || element.target.className === "djs-direct-editing-content")
     {
-      axios.post('/ontology-suggestion', {role: 'reporter'}).then(response => {
-        app.suggestions = response.data.suggestions
-      }).catch( err => {
-        console.error({err})
-      })
-
+      // axios.post('/ontology-suggestion', {role: 'reporter'}).then(response => {
+      //   app.suggestions = response.data.suggestions
+      // }).catch( err => {
+      //   console.error({err})
+      // })
+      let items = ['reporter', 'editor', 'secretario de redacao', 'chefe de reportagem']
+      app.author =  items[Math.floor(Math.random() * items.length)]
     }
   });
 });

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic import View
@@ -394,18 +394,20 @@ class ProcessModelingView(TemplateView):
     template_name = "bpmn/process_modeling.html"
     
 
-import json
+import json, ast
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 @method_decorator(csrf_exempt, name='dispatch')
 class OntologySuggestionView(View):
 
     def post(self,request, *args, **kwargs):
-        import pdb; pdb.set_trace();
         body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        content = body['content']
-        # open static ontology
-        # Sparq query
+        content = ast.literal_eval(body_unicode)
+        domain_owl_path = staticfiles_storage.path('ontologies/news_publicationrdf.owl')
+        
+        import pdb; pdb.set_trace();
+        # manipulate content
+
         return HttpResponse(content, content_type="application/json")
 
 class ProcessCreate(FormView):

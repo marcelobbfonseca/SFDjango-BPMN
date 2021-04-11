@@ -9,7 +9,10 @@ This project implements part of a semantic framework directed to Business Proces
 ### Usando Docker
 
 Requires Docker and docker-compose installed. 
-1. [Download docker here](https://www.docker.com/products/docker-desktop) 
+1. Download and Install docker
+    - [MacOS](https://www.docker.com/products/docker-desktop) 
+    - [Debian](https://docs.docker.com/engine/install/debian/#installation-methods)
+    - [Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
 2. [Download and Install docker-compose here](https://docs.docker.com/compose/install/)
 
 In root directory run ```docker-compose up```. App will start and run in port localhost:3000
@@ -63,3 +66,18 @@ python -c "import nltk; nltk.download('punkt')"
 ### Seed Database
 
 python3 manage.py shell < seed.py
+
+
+### Testing
+
+Executando ```pytest```
+```bash
+pytest
+pytest a_directory                     # directory
+pytest test_something.py               # tests file
+pytest test_something.py::single_test  # single test function
+```
+
+```
+python manage.py collectstatic
+```
