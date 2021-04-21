@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.shortcuts import render, redirect
 from django.utils.html import format_html
-from django.conf.urls import url
+from django.conf.urls import re_path
 from django.http import HttpResponseRedirect
 from itertools import chain
 from .manager import update_process, get_possible_activities, get_possible_events
@@ -56,7 +56,7 @@ class ProcessAdmin(admin.ModelAdmin):
 
         urls = super().get_urls()
         my_urls = [
-            url('update_process_/', self.update_process_),
+            re_path('update_process_/', self.update_process_),
         ]
 
         return my_urls + urls

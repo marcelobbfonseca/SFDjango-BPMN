@@ -78,6 +78,8 @@ pytest test_something.py               # tests file
 pytest test_something.py::single_test  # single test function
 ```
 
+
+### static files
 ```
 python manage.py collectstatic
 ```
