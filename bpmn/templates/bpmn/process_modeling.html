@@ -19,7 +19,7 @@
 
     <div class="row">
         <div class="col">
-            <div id="canvas"  style="height: 600px;"></div>
+            <div id="canvas"  style="height: 600px;" @click="diagramEvent"></div>
         </div>
         <div class="col-3">
           <h3>Sugestões: [[author]]</h3>
@@ -34,12 +34,21 @@
 <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
 <script>
 
+const diagram = {
+  PARTICIPANT: "Participant", //pool
+  COLLABORATION: "Collaboration", //all
+  LANE: "Lane",
+  FLOW: "Flow",
+  ACTIVITY: "Activity",
+  EVENT: "Event"
+}
+
 var app = new Vue({
   delimiters: ['[[', ']]'],
   el: '#app',
   data: {
+    debug:null,
     author: '',
-    message: 'Hello Vue!',
     diagramXML: `<?xml version="1.0" encoding="UTF-8"?>
       <bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" targetNamespace="http://bpmn.io/schema/bpmn" id="Definitions_1">
         <bpmn:process id="Process_1" isExecutable="false">
@@ -55,6 +64,16 @@ var app = new Vue({
       </bpmn:definitions>`,
     container: null,
     modeler: null,
+    diagramElementsDefault:{
+      Participant: [],
+      Collaboration: [],
+      Lane: [],
+      Flow: [],
+      Activity: [],
+      Event: []
+    },
+
+
     suggest:{
       reporter:[
         'produz matéria',
@@ -79,7 +98,47 @@ var app = new Vue({
   computed:{
     suggestions(){
       return this.suggest[this.author]
-    }
+    },
+    diagramElements(){
+      let elements = document.body.querySelectorAll('[data-element-id]')
+      // let diagramElements = Object.assign({}, this.diagramElementsDefault)
+      let diagramElements = JSON.parse(JSON.stringify(this.diagramElementsDefault))
+      for (let element of elements)
+      {
+          let keyValue =  element.getAttribute('data-element-id').split('_')
+          console.log(keyValue)
+          const diagramType = keyValue[0]
+          const diagramId = keyValue[1]
+          let x, y
+          switch (diagramType) {
+            case diagram.PARTICIPANT:
+              diagramElements[diagram.PARTICIPANT].push({id:diagramId, name:''})
+              break
+            case diagram.LANE:
+              let name = element.querySelector('tspan').innerHTML
+              x = element.transform.baseVal[0].matrix.e
+              y = element.transform.baseVal[0].matrix.f
+              diagramElements[diagram.LANE].push({id:diagramId, author:name, x, y})
+              break
+            case diagram.COLLABORATION:
+            case diagram.FLOW:
+              // x = element.transform.baseVal[0].matrix.e
+              // y = element.transform.baseVal[0].matrix.f
+              diagramElements[diagramType].push({id:diagramId})
+              break
+            default: // Event, flow, Activity
+              let description = element.querySelector('tspan')
+              if(description)description=description.innerHTML
+              x = element.transform.baseVal[0].matrix.e
+              y = element.transform.baseVal[0].matrix.f
+              diagramElements[diagramType].push({id:diagramId, description, x, y})
+              break
+          }
+      }
+      return diagramElements
+    },
+
+
   },
   mounted(){
     this.container = $('#canvas')
@@ -91,6 +150,22 @@ var app = new Vue({
     this.setupDragDrop()
   },
   methods:{
+    diagramEvent(element){
+      // entry bpmn-icon-task: caixinha pop up da task pra append nexttask
+      // djs-direct-editing-content: menu lateral
+      if(element.target.className === "entry bpmn-icon-task" || element.target.className === "djs-direct-editing-content")
+      {
+        console.log({element})
+        this.debug= element
+        // axios.post('/ontology-suggestion', {role: 'reporter'}).then(response => {
+        //   app.suggestions = response.data.suggestions
+        // }).catch( err => {
+        //   console.error({err})
+        // })
+        let items = ['reporter', 'editor', 'secretario de redacao', 'chefe de reportagem']
+        this.author =  items[Math.floor(Math.random() * items.length)]
+      }
+    },
     createNewDiagram(){
       this.openDiagram(this.diagramXML)
     },
@@ -185,20 +260,6 @@ var app = new Vue({
 
 }) //app
 
-$(function() {
-  document.getElementById('canvas').addEventListener('click', function(element){
-    if(element.target.className === "entry bpmn-icon-task" || element.target.className === "djs-direct-editing-content")
-    {
-      // axios.post('/ontology-suggestion', {role: 'reporter'}).then(response => {
-      //   app.suggestions = response.data.suggestions
-      // }).catch( err => {
-      //   console.error({err})
-      // })
-      let items = ['reporter', 'editor', 'secretario de redacao', 'chefe de reportagem']
-      app.author =  items[Math.floor(Math.random() * items.length)]
-    }
-  });
-});
 
 </script>
 {% endblock %}
