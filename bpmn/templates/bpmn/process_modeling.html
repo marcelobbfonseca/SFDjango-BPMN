@@ -123,12 +123,14 @@ var app = new Vue({
       this.updateDiagramElements()
       // entry bpmn-icon-task: caixinha pop up da task pra append nexttask
       // djs-direct-editing-content: menu lateral
+      console.log({element})
+      this.debug = element
       if(element.target.className === "entry bpmn-icon-task" || element.target.className === "djs-direct-editing-content")
       {
         console.log({element})
         this.debug= element
         axios.post('/ontology-suggestion', { elements:this.diagramElements, eventTrigger: element}).then(response => {
-          app.suggestions = response.data.suggestions
+          this.suggestions = response.data.suggestions
         }).catch( err => {
           console.error({err})
         })
@@ -138,10 +140,9 @@ var app = new Vue({
     },
 
     updateDiagramElements() {
-      console.log("oi")
       let elements = document.body.querySelectorAll('[data-element-id]')
-      let diagramElements = Object.assign({}, this.diagramElementsDefault)
-      // let diagramElements = JSON.parse(JSON.stringify(this.diagramElementsDefault))
+      // let diagramElements = Object.assign({}, this.diagramElementsDefault)
+      let diagramElements = JSON.parse(JSON.stringify(this.diagramElementsDefault))
       for (let element of elements)
       {
           let keyValue =  element.getAttribute('data-element-id').split('_')
