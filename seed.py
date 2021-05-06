@@ -1,4 +1,7 @@
 from django.contrib.auth.models import User, Group
+from bpmn.models import Ontology
+from SFDjango.settings import STATIC_ROOT
+
 
 groups = [
     'Editor',
@@ -23,3 +26,12 @@ for login, pw, su in users:
     user.is_superuser=su
     user.is_staff=True
     user.save()
+
+
+domain_owl_path = STATIC_ROOT + '/bpmn/ontologies/news_publicationrdf.owl'
+Ontology.objects.create(
+    name='newsroom domain', 
+    prefix='http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#', 
+    path_name=domain_owl_path
+    )
+
