@@ -10,6 +10,11 @@ from .forms import PoolForm, LaneForm, EventForm, SequenceForm, FlowForm, Proces
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+
+import json #, ast
+from .utils.process_utils import ProcessUtils
+from .utils.newsroom_process_utils import NewsroomProcessUtils
+# content = ast.literal_eval(body_unicode)
 ####################################### Activity type views #######################################
 
 class ActivityTypeView(TemplateView):
@@ -394,21 +399,29 @@ class ProcessModelingView(TemplateView):
     template_name = "bpmn/process_modeling.html"
     
 
-import json, ast
-from django.contrib.staticfiles.storage import staticfiles_storage
 
 @method_decorator(csrf_exempt, name='dispatch')
 class OntologySuggestionView(View):
 
     def post(self,request, *args, **kwargs):
         body_unicode = request.body.decode('utf-8')
-        content = ast.literal_eval(body_unicode)
-        domain_owl_path = staticfiles_storage.path('ontologies/news_publicationrdf.owl')
-        
-        import pdb; pdb.set_trace();
-        # manipulate content
+        params = json.loads(body_unicode) # try
 
-        return HttpResponse(content, content_type="application/json")
+        newsroom_process_utils = NewsroomProcessUtils()
+        laneTasks = ProcessUtils.get_tasks_by_lane(params['elements'])
+        result={}
+        if(len(params['elements']['Lane'])):
+            result['tasksStatuses'] = newsroom_process_utils.verify_tasks_by_lanes(laneTasks)
+
+        
+
+        if(params['elements']['Participant']):
+            result['missing_tasks'] = newsroom_process_utils.verify_process_missing_tasks(laneTasks)
+
+        # 4.rename domain_newsroom owl
+        # 7.Create SPARQLUtils for SELECT, ASK, ...
+        
+        return HttpResponse(result, content_type="application/json")
 
 class ProcessCreate(FormView):
 
