@@ -193,13 +193,16 @@ class Ontology(models.Model):
     name = models.CharField(max_length=255, default='')
     prefix = models.CharField(max_length=255, default='')
     path_name = models.CharField(max_length=255, default='')
+    
     def __str__(self):
         return "name:{}, prefix:{}".format(self.name, self.prefix)
 
-
+    
     # @static_method
     # def remove_prefix():
     #     pass
+
+
 
 ################################## Functions to manipulate process update ##################################
 

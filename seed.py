@@ -29,9 +29,5 @@ for login, pw, su in users:
 
 
 domain_owl_path = STATIC_ROOT + '/bpmn/ontologies/news_publicationrdf.owl'
-Ontology.objects.create(
-    name='newsroom domain', 
-    prefix='http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#', 
-    path_name=domain_owl_path
-    )
+Ontology.objects.create(name='newsroom domain', prefix='http://www.semanticweb.org/oem/ontologies/2021/2/news_publication#', path_name=domain_owl_path)
 
