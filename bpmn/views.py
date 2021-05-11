@@ -406,17 +406,17 @@ class OntologySuggestionView(View):
     def post(self,request, *args, **kwargs):
         body_unicode = request.body.decode('utf-8')
         params = json.loads(body_unicode) # try
+        result = {}
 
         newsroom_process_utils = NewsroomProcessUtils()
-        laneTasks = ProcessUtils.get_tasks_by_lane(params['elements'])
-        result={}
-        if(len(params['elements']['Lane'])):
-            result['tasksStatuses'] = newsroom_process_utils.verify_tasks_by_lanes(laneTasks)
-
+        if('elements' in params):
+            laneTasks = ProcessUtils.get_tasks_by_lane(params['elements'])
         
+            if(len(params['elements']['Lane'])):
+                result['tasksStatuses'] = newsroom_process_utils.verify_tasks_by_lanes(laneTasks)
 
-        if(params['elements']['Participant']):
-            result['missing_tasks'] = newsroom_process_utils.verify_process_missing_tasks(laneTasks)
+            if('Participant' in params['elements']):
+                result['missing_tasks'] = newsroom_process_utils.verify_process_missing_tasks(laneTasks)
 
         # 4.rename domain_newsroom owl
         # 7.Create SPARQLUtils for SELECT, ASK, ...
