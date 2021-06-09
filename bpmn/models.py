@@ -198,10 +198,14 @@ class Ontology(models.Model):
         return "name:{}, prefix:{}".format(self.name, self.prefix)
 
     
-    # @static_method
-    # def remove_prefix():
-    #     pass
+    @staticmethod
+    def remove_prefix(rdf_node):
+        return rdf_node.split('#')[1]
 
+    @staticmethod
+    def remove_prefixes(rdf_nodes):
+        result = [ rdf_node.split('#')[1] for rdf_node in rdf_nodes]
+        return result
 
 
 ################################## Functions to manipulate process update ##################################
