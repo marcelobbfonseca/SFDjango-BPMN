@@ -197,7 +197,10 @@ class Ontology(models.Model):
     def __str__(self):
         return "name:{}, prefix:{}".format(self.name, self.prefix)
 
-    
+    @staticmethod
+    def have_prefix(rdf_node):
+        return bool(rdf_node.count('#'))
+
     @staticmethod
     def remove_prefix(rdf_node):
         return rdf_node.split('#')[1]
