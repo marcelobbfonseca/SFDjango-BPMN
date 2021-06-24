@@ -33,7 +33,7 @@ def test_verify_task_author(domain_ontology, newsroom_process_utils):
     task = 'revisa matéria_01'
     author = 'editor_01'
     print("hi")
-    result = newsroom_process_utils.verify_task_author(author, task)
+    result, _ = newsroom_process_utils.verify_task_author(author, task)
     assert result == True
 
 
@@ -41,7 +41,7 @@ def test_verify_task_wrong_author(domain_ontology, newsroom_process_utils):
     domain_ontology
     task = 'revisa matéria_01'
     author = 'reporter_01'
-    result = newsroom_process_utils.verify_task_author(author, task)
+    _, result = newsroom_process_utils.verify_task_author(author, task)
     assert result[0] == "editor_01"
 
 
@@ -60,8 +60,8 @@ def test_get_tasks_by_lane():
             {"id":"1mgmwrm","author":"Reporter","x":198,"y":165}],
         "Flow":[{"id":"1u1gs3n"},{"id":"00cgsce"},{"id":"1t4sqfy"},{"id":"03f070z"},{"id":"1u1gs3n"},{"id":"00cgsce"},{"id":"1t4sqfy"}],
         "Activity":[
-            {"id":"04csnbg","description":"revisar materia","x":350,"y":70},
-            {"id":"09l1mrk","description":"reescreve ","x":520,"y":70},
+            {"id":"04csnbg","description":"revisar matéria","x":350,"y":70},
+            {"id":"09l1mrk","description":"reescreve matéria","x":520,"y":70},
             {"id":"0m5f9rd","description":"publicar matéria","x":520,"y":200}
         ],
         "Event":[{"id":"1uqtwc9","description":None,"x":672,"y":222}],
@@ -70,16 +70,25 @@ def test_get_tasks_by_lane():
         "Process":[]
     }
     tasks_by_lane = ProcessUtils.get_tasks_by_lane(elements)
-
     assert len(tasks_by_lane['Editor']) == 2
     assert len(tasks_by_lane['Reporter']) == 1
 
 
 def test_verify_tasks_by_lanes(domain_ontology, newsroom_process_utils):
     domain_ontology
-    laneTasks = {}
-    newsroom_process_utils.verify_process_missing_tasks(laneTasks)
-    
+    laneTasks = {
+        'Editor': [
+            {'id': '04csnbg', 'description': 'revisar matéria', 'x': 350, 'y': 70}, 
+            {'id': '09l1mrk', 'description': 'reescreve matéria', 'x': 520, 'y': 70}
+        ], 
+        'Reporter': [
+            {'id': '0m5f9rd', 'description': 'publicar matéria', 'x': 520, 'y': 200}
+        ]
+    }
+    verified_tasks = newsroom_process_utils.verify_tasks_by_lanes(laneTasks)
+
+    assert verified_tasks['Editor'][0]['ok'] == False
+    assert verified_tasks['Editor'][0]['id'] == '04csnbg'
 
 def test_verify_process_missing_tasks():
     assert 1 == 1
