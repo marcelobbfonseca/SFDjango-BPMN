@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic import View
 from django.views.generic.edit import UpdateView, DeleteView, FormView
+
 from .models import Activity, ActivityType, Process, ProcessType, Pool, Lane, Event, Sequence, Flow
 from .forms import ActivityForm, ActivityTypeForm, ProcessForm, ProcessTypeForm
 from .forms import PoolForm, LaneForm, EventForm, SequenceForm, FlowForm, ProcessUpdateForm
@@ -398,8 +399,6 @@ class ProcessView(TemplateView):
 class ProcessModelingView(TemplateView):
     template_name = "bpmn/process_modeling.html"
     
-
-
 @method_decorator(csrf_exempt, name='dispatch')
 class OntologySuggestionView(View):
 
@@ -415,13 +414,10 @@ class OntologySuggestionView(View):
             if(len(params['elements']['Lane'])):
                 result['tasksStatuses'] = newsroom_process_utils.verify_tasks_by_lanes(laneTasks)
 
-            if('Participant' in params['elements']):
-                result['missing_tasks'] = newsroom_process_utils.verify_process_missing_tasks(laneTasks)
+            # if('Participant' in params['elements']):
+                # result['missing_tasks'] = newsroom_process_utils.verify_process_missing_tasks(laneTasks)
 
-        # 4.rename domain_newsroom owl
-        # 7.Create SPARQLUtils for SELECT, ASK, ...
-        
-        return HttpResponse(result, content_type="application/json")
+        return JsonResponse(result)
 
 class ProcessCreate(FormView):
 

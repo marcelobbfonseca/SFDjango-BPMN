@@ -86,7 +86,6 @@ def test_verify_tasks_by_lanes(domain_ontology, newsroom_process_utils):
         ]
     }
     verified_tasks = newsroom_process_utils.verify_tasks_by_lanes(laneTasks)
-
     assert verified_tasks['Editor'][0]['ok'] == False
     assert verified_tasks['Editor'][0]['id'] == '04csnbg'
 
