@@ -416,7 +416,6 @@ class OntologySuggestionView(View):
 
             # if('Participant' in params['elements']):
                 # result['missing_tasks'] = newsroom_process_utils.verify_process_missing_tasks(laneTasks)
-
         return JsonResponse(result)
 
 class ProcessCreate(FormView):

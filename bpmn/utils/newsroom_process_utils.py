@@ -29,7 +29,8 @@ class NewsroomProcessUtils:
 
   def verify_task_author(self, author, task): 
     # retorna true(ASK) ou correçao(SELECT)
-    predicate, obj = task.split(' ')
+
+    predicate, obj = task['description'].split(' ')
     query_string = "ASK {{ news:{} news:{} news:{} .}}".format(author, predicate, obj)
     is_true = self.graph.query(query_string, initNs={"news": self.newsroom_ontology.prefix})
     
@@ -49,7 +50,7 @@ class NewsroomProcessUtils:
     for lane in lane_tasks:
         verified_tasks[lane] = []
         for task in lane_tasks[lane]:
-            if task['description'] and task['description'].strip(): # verify if empty
+            if len(task['description']) == 0: # verify if empty
               author_tasks = self.get_lane_tasks(lane)
               verified_tasks[lane].append({'id':task['id'], 'ok':False, 'fix':author_tasks})
               break
