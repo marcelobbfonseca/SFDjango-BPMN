@@ -22,13 +22,15 @@
             <div id="canvas"  style="height: 600px;" @click="diagramEvent"></div>
         </div>
         <div class="col-3">
-          <h3 v-if="poolExist">Pool exist</h3>
+          <!-- <h3 v-if="poolExist">Pool exist</h3>
           <h3 v-if="activityExist">activity exist</h3>
-          <h3 v-if="laneExist">Lane exist</h3>
-          <h3>Sugestões: [[author]]</h3>
-          <ul v-for="suggestion in suggestions" :key="suggestion">
-            <li><a href="#">[[suggestion]]</a></li>
-          </ul>
+          <h3 v-if="laneExist">Lane exist</h3> -->
+          <div v-for="(lane, key) in laneErrors" :key="key+'a'">
+            <h3>Lane: [[key]]</h3>
+            <ul v-for="(error, index) of laneErrors[key]" :key="index">
+              <li><a style="color: crimson;">[[error]]</a></li>
+            </ul>
+          </div>
         </div>
     </div>
 </section>
@@ -53,6 +55,7 @@ var app = new Vue({
   delimiters: ['[[', ']]'],
   el: '#app',
   data: {
+    laneErrors:{},
     debug:null,
     author: '',
     diagramXML: `<?xml version="1.0" encoding="UTF-8"?>
@@ -72,32 +75,8 @@ var app = new Vue({
     modeler: null,
     diagramElements:{Participant: [], Collaboration: [],Lane: [],Flow: [],Activity: [],Event: [],Gateway:[],StartEvent:[],Process:[]},
     diagramElementsDefault:{Participant: [],Collaboration: [],Lane: [],Flow: [],Activity: [],Event: [],Gateway:[],StartEvent:[],Process:[]},
-    suggest:{
-      reporter:[
-        'produz matéria',
-        'reescreve matéria'
-      ],
-      editor:[
-        'designa reporter',
-        'revisa matéria',
-        'publica matéria',
-        'recebe pauta'
-      ],
-      'chefe de reportagem':[
-        'distribui pauta',
-        'aprova matéria'
-      ],
-      'secretario de redacao':[
-        'distribui pauta',
-        'define pauta',
-      ],
-    }
   },
   computed:{
-    suggestions(){
-      return this.suggest[this.author]
-    },
-
     laneExist(){
       return this.diagramElements[diagram.LANE].length > 0
     },
@@ -123,19 +102,18 @@ var app = new Vue({
       this.updateDiagramElements()
       // entry bpmn-icon-task: caixinha pop up da task pra append nexttask
       // djs-direct-editing-content: menu lateral
-      console.log({element})
+      // console.log({element})
       this.debug = element
       if(element.target.className === "entry bpmn-icon-task" || element.target.className === "djs-direct-editing-content")
       {
-        console.log({element})
+        // console.log({element})
         this.debug= element
         axios.post('/ontology-suggestion', { elements:this.diagramElements, eventTrigger: element}).then(response => {
-          this.suggestions = response.data.suggestions
+          this.response = response.data
+          this.validateTasks(response.data.tasksStatuses)
         }).catch( err => {
           console.error({err})
         })
-        let items = ['reporter', 'editor', 'secretario de redacao', 'chefe de reportagem']
-        this.author =  items[Math.floor(Math.random() * items.length)]
       }
     },
 
@@ -146,16 +124,16 @@ var app = new Vue({
       for (let element of elements)
       {
           let keyValue =  element.getAttribute('data-element-id').split('_')
-          console.log(keyValue)
           const diagramType = keyValue[0]
           const diagramId = keyValue[1]
-          let x, y
+          let x, y, name
           switch (diagramType) {
             case diagram.PARTICIPANT:
-              diagramElements[diagram.PARTICIPANT].push({id:diagramId, name:''})
+              name = element.querySelector('tspan').innerHTML
+              diagramElements[diagram.PARTICIPANT].push({id:diagramId, name})
               break
             case diagram.LANE:
-              let name = element.querySelector('tspan').innerHTML
+              name = element.querySelector('tspan').innerHTML
               x = element.transform.baseVal[0].matrix.e
               y = element.transform.baseVal[0].matrix.f
               diagramElements[diagram.LANE].push({id:diagramId, author:name, x, y})
@@ -233,27 +211,19 @@ var app = new Vue({
       function handleFileSelect(e) {
         e.stopPropagation();
         e.preventDefault();
-
         var files = e.dataTransfer.files;
-
         var file = files[0];
-
         var reader = new FileReader();
-
         reader.onload = function(e) {
-
           var xml = e.target.result;
-
           this.openDiagram(xml);
         };
-
         reader.readAsText(file);
       }
 
       function handleDragOver(e) {
         e.stopPropagation()
         e.preventDefault()
-
         e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
       }
 
@@ -264,11 +234,35 @@ var app = new Vue({
       if (!window.FileList || !window.FileReader) {
         window.alert(
           'Looks like you use an older browser that does not support drag and drop. ' +
-          'Try using Chrome, Firefox or the Internet Explorer > 10.');
+          'Try using Chrome, Firefox or the Internet Explorer > 10.')
       } else {
-        this.registerFileDrop();
+        this.registerFileDrop()
       }
     },
+    validateTasks(tasksStatuses) {
+      console.log("alo 2")
+      this.tasksStatuses = tasksStatuses
+      console.log({tasksStatuses})
+      this.laneErrors = {}
+      for(lane in tasksStatuses) {
+        this.laneErrors[lane] = []
+        for (task of tasksStatuses[lane]) {
+          let color = 'black'
+          if (!task.ok) { 
+            this.laneErrors[lane] = [...this.laneErrors[lane],...task.fix]
+            color = 'red'
+          }
+          this.paintTask(task, color)
+        }
+      }
+
+    },
+    paintTask(task,color) { 
+      console.log("alo 3")
+      let taskElement =  document.querySelector(`[data-element-id="Activity_${task.id}"]`)
+      taskElement.firstElementChild.firstElementChild.style.stroke = color
+    }
+
   } //methods
 
 }) //app
