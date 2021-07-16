@@ -240,9 +240,7 @@ var app = new Vue({
       }
     },
     validateTasks(tasksStatuses) {
-      console.log("alo 2")
       this.tasksStatuses = tasksStatuses
-      console.log({tasksStatuses})
       this.laneErrors = {}
       for(lane in tasksStatuses) {
         this.laneErrors[lane] = []
@@ -258,7 +256,6 @@ var app = new Vue({
 
     },
     paintTask(task,color) { 
-      console.log("alo 3")
       let taskElement =  document.querySelector(`[data-element-id="Activity_${task.id}"]`)
       taskElement.firstElementChild.firstElementChild.style.stroke = color
     }

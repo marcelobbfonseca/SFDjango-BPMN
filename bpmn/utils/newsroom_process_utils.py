@@ -15,20 +15,22 @@ class NewsroomProcessUtils:
 
   def get_lane_tasks(self, author):
       # return alllane tasks
-      # TODO: getting non prefixed predicate! group_()
+      # TODO: getting non prefixed predicate! group_(). filter in query
       query_string =  "SELECT ?p ?o WHERE {{ news:{} ?p ?o .}}".format(author)
       result = self.graph.query(query_string, initNs={"news": self.newsroom_ontology.prefix})
       tasks = []
-
+      
       for row in result:
         if Ontology.have_prefix(row.p) and Ontology.have_prefix(row.o):
+          if(Ontology.remove_prefix(row.p))=="type":
+            continue
           task = "{} {}".format(Ontology.remove_prefix(row.p), Ontology.remove_prefix(row.o)) 
           tasks.append(task)
 
       return tasks
 
   def verify_task_author(self, author, task): 
-    # retorna true(ASK) ou correçao(SELECT)
+    # retorna true(ASK) e array correçao(SELECT) se tiver
 
     predicate, obj = task['description'].split(' ')
     query_string = "ASK {{ news:{} news:{} news:{} .}}".format(author, predicate, obj)
@@ -56,7 +58,7 @@ class NewsroomProcessUtils:
               break
 
             task_ok, fix = self.verify_task_author(lane, task)
-            verified_tasks[lane].append({'id':task['id'], 'ok':task_ok, 'fix': [fix] })
+            verified_tasks[lane].append({'id':task['id'], 'ok':task_ok, 'fix': fix })
 
     return verified_tasks
 
