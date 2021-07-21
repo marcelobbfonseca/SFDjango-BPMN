@@ -1,11 +1,13 @@
+from django.db.models.fields import mixins
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic import View
 from django.views.generic.edit import UpdateView, DeleteView, FormView
+# from rest_framework import generics
 
-from .models import Activity, ActivityType, Process, ProcessType, Pool, Lane, Event, Sequence, Flow
+from .models import Activity, ActivityType, Process, ProcessType, Pool, Lane, Event, Sequence, Flow, Diagram
 from .forms import ActivityForm, ActivityTypeForm, ProcessForm, ProcessTypeForm
 from .forms import PoolForm, LaneForm, EventForm, SequenceForm, FlowForm, ProcessUpdateForm
 
@@ -417,6 +419,16 @@ class OntologySuggestionView(View):
             # if('Participant' in params['elements']):
                 # result['missing_tasks'] = newsroom_process_utils.verify_process_missing_tasks(laneTasks)
         return JsonResponse(result)
+
+
+
+# @method_decorator(csrf_exempt, name='dispatch')
+# class DiagramAPI(mixins.ListModelMixin,
+#               mixins.CreateModelMixin):
+#             #   generics.GenericAPIView):
+#     model = Diagram
+#     queryset = Diagram.objecst.all()
+
 
 class ProcessCreate(FormView):
 

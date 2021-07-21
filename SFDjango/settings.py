@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'sass_processor',
     'fontawesome_5',
     'pwa',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

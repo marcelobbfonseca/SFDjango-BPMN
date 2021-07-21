@@ -48,7 +48,7 @@ def test_get_lane_tasks(domain_ontology, newsroom_process_utils):
     domain_ontology
     author = "reporter_01"
     tasks = newsroom_process_utils.get_lane_tasks(author)
-    assert len(tasks) == 4
+    assert len(tasks) == 2
 
 def test_get_tasks_by_lane():
     elements = {
