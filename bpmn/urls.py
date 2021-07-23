@@ -1,6 +1,14 @@
 from django.urls import path
 from django.contrib.auth.views import LoginView
-from .views import *
+from .views.activity_view import *
+from .views.activity_type_view import *
+from .views.event_view import *
+from .views.flow_view import *
+from .views.lane_view import *
+from .views.pool_view import *
+from .views.process_type_view import *
+from .views.process_view import *
+from .views.sequence_view import *
 
 urlpatterns = [
     path('', LoginView.as_view(template_name='accounts/login.html'), name="login"),
