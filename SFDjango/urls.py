@@ -16,6 +16,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from .api import router
 
 
 urlpatterns = [
@@ -23,4 +24,5 @@ urlpatterns = [
     path('', include('bpmn.urls')),
     path('', include('accounts.urls')),
     path('', include('pwa.urls')),
+    path('api/v1/', include(router.urls))
 ]
