@@ -60,9 +60,12 @@ INSTALLED_APPS = [
     'fontawesome_5',
     'pwa',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -173,6 +176,9 @@ EMAIL_HOST_PASSWORD = 'Semantic2020'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 # CONTACT_EMAIL = ''
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 # Configure Django App for Heroku.
 import django_heroku

@@ -5,20 +5,40 @@
 <link rel="stylesheet" href="https://unpkg.com/bpmn-js@8.2.2/dist/assets/diagram-js.css" />
 <link rel="stylesheet" href="https://unpkg.com/bpmn-js@8.2.2/dist/assets/bpmn-font/css/bpmn.css" />
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
-<br><br><br>
-<section id="app" class="container-fluid">
+<style>
+.dark-theme{
+  background-color: rgb(19, 34, 34);
+}
+.dark-theme-text {
+  color: aliceblue;
+}
+.canvas-bg{
+  background-color: rgb(50, 102, 102);
+}
+</style>
+<br><br>
+<section id="app" class="container-fluid dark-theme">
 
     <div class="row">
         <div class="col">
-            <h1>Modelagem de processo</h1>
+            <h1 class="dark-theme-text">Modelagem de processo</h1>
             <button id="js-create-diagram" type="button" class="btn btn-secondary">Abrir novo</button>
-            <button id="js-download-diagram" type="button" class="btn btn-success mybtn">Salvar</button>
-            <button id="js-download-svg" type="button" class="btn btn-success mybtn">Salvar Imagem</button>
+
+            <button v-if="saveLoading" class="btn btn-secondary" type="button" disabled>
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Loading...
+            </button>
+
+            <button v-else id="js-download-diagram" type="button" class="btn btn-success" @click="saveDiagram">
+              Salvar
+            </button>
+
+            <button id="js-download-svg" type="button" class="btn btn-success">Salvar Imagem</button>
         </div>
     </div>
 
     <div class="row">
-        <div class="col">
+        <div class="col canvas-bg">
             <div id="canvas"  style="height: 600px;" @click="diagramEvent"></div>
         </div>
         <div class="col-3">
@@ -26,7 +46,7 @@
           <h3 v-if="activityExist">activity exist</h3>
           <h3 v-if="laneExist">Lane exist</h3> -->
           <div v-for="(lane, key) in laneErrors" :key="key+'a'">
-            <h3>Lane: [[key]]</h3>
+            <h3 class="dark-theme-text">Lane: [[key]]</h3>
             <ul v-for="(error, index) of laneErrors[key]" :key="index">
               <li><a style="color: crimson;">[[error]]</a></li>
             </ul>
@@ -38,6 +58,9 @@
 <script src="https://unpkg.com/bpmn-js@8.2.2/dist/bpmn-modeler.development.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
 <script>
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.withCredentials = true;
 
 const diagram = {
   PARTICIPANT: "Participant", //pool
@@ -48,7 +71,7 @@ const diagram = {
   EVENT: "Event",
   GATEWAY:"Gateway",
   PROCESS:"Process",
-  STARTEVENT:"StartEvent"
+  STARTEVENT:"StartEvent",
 }
 
 var app = new Vue({
@@ -73,8 +96,13 @@ var app = new Vue({
       </bpmn:definitions>`,
     container: null,
     modeler: null,
+    saveLoading: false,
+    diagram:{
+      id: null,
+    },
     diagramElements:{Participant: [], Collaboration: [],Lane: [],Flow: [],Activity: [],Event: [],Gateway:[],StartEvent:[],Process:[]},
     diagramElementsDefault:{Participant: [],Collaboration: [],Lane: [],Flow: [],Activity: [],Event: [],Gateway:[],StartEvent:[],Process:[]},
+    debugDiagram: null,
   },
   computed:{
     laneExist(){
@@ -181,20 +209,29 @@ var app = new Vue({
       }
     },
 
-    async saveXML() {
+    async saveDiagram() {
       try {
-        const diagram = {xml: null, svg: null}
-        diagram.xml = await modeler.saveXML({ format: true });
-        diagram.svg = await modeler.saveSVG();
-        setEncoded($('#js-download-diagram'), 'diagram.bpmn', xml);
-        setEncoded($('#js-download-svg'), 'diagram.svg', svg);
-        axios.post('/', diagram).then(response => {
+        const diagram = {}
+        diagram.xml =( await this.modeler.saveXML({ format: true })).xml
+        diagram.svg = (await this.modeler.saveSVG()).svg
+        // this.setEncoded($('#js-download-diagram'), 'diagram.bpmn', diagram.xml);
+        // this.setEncoded($('#js-download-svg'), 'diagram.svg', diagram.svg);
+        this.saveLoading = true
+        const config = { Headers:{'X-CSRFToken': window.getCookie('csrftoken')}}
+        let response
+        if(this.diagram.id)
+          response = await axios.put('/api/v1/diagrams/', diagram, config)
+        else
+          response = await axios.post('/api/v1/diagrams/', diagram, config)
+        this.debugDiagram = response
+        console.log({response})
+        this.diagram = Object.assign(this.diagram, response.data)
 
-        }).catch(err=>{
-          console.log({err})
-        })
       } catch (err) {
         console.error('Error happened saving diagram: ', err);
+      }
+      finally {
+        this.saveLoading = false
       }
     },
 
@@ -268,12 +305,28 @@ var app = new Vue({
       let trimmedText = ''
       words.forEach(word => { if(word.length)trimmedText = trimmedText + `${word} ` } ) 
       return trimmedText.trim()
-    }
-
+    },
   } //methods
 
 }) //app
 
 
+window.getCookie = (name) => {
+  let cookieValue = null
+  if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';')
+      for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim()
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
+              break
+          }
+      }
+  }
+  return cookieValue
+}
+
 </script>
+
 {% endblock %}

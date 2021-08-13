@@ -1,5 +1,5 @@
-from .models import Diagram, Process
 from rest_framework import serializers
+from .models import Diagram, Process
 
 
 class ProcessSerializer(serializers.HyperlinkedModelSerializer):
