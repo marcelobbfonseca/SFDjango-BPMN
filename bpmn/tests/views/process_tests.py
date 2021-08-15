@@ -8,6 +8,8 @@ def test_hello_world(client):
     assert 1 == 1
 
 
+
+
 @pytest.mark.django_db
 def test_ontology_suggestion(client):
     data = {"hello": "hi"}

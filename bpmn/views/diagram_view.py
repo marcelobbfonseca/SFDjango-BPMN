@@ -2,7 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from ..models import Diagram
 from ..serializers import DiagramSerializer
 from django.http import JsonResponse
-
+from rest_framework.response import Response
 
 class DiagramViewset(ModelViewSet):
     queryset = Diagram.objects.all()
@@ -16,3 +16,7 @@ class DiagramViewset(ModelViewSet):
         return JsonResponse(serializer.data)
         
     
+    def list(self, request, format=None, *args, **kwargs):
+        queryset = Diagram.objects.all().values('id', 'name', 'process')
+        serializer = DiagramSerializer(queryset, many=True)
+        return Response(serializer.data)
