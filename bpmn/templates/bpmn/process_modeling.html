@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col">
             <h1 class="dark-theme-text">Modelagem de processo</h1>
-            <button id="js-create-diagram" type="button" class="btn btn-secondary">Abrir novo</button>
+            <button type="button" class="btn btn-secondary">Abrir novo</button>
 
             <button v-if="saveLoading" class="btn btn-secondary" type="button" disabled>
               <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -78,8 +78,8 @@ var app = new Vue({
   delimiters: ['[[', ']]'],
   el: '#app',
   data: {
-    laneErrors:{},
-    debug:null,
+    laneErrors: {},
+    debug: null,
     author: '',
     diagramXML: `<?xml version="1.0" encoding="UTF-8"?>
       <bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" targetNamespace="http://bpmn.io/schema/bpmn" id="Definitions_1">
@@ -99,24 +99,31 @@ var app = new Vue({
     saveLoading: false,
     diagram:{
       id: null,
+      name: '',
+      xml: null,
+      svg: null,
     },
-    diagramElements:{Participant: [], Collaboration: [],Lane: [],Flow: [],Activity: [],Event: [],Gateway:[],StartEvent:[],Process:[]},
-    diagramElementsDefault:{Participant: [],Collaboration: [],Lane: [],Flow: [],Activity: [],Event: [],Gateway:[],StartEvent:[],Process:[]},
+    diagramElements: { Participant: [], Collaboration: [],Lane: [],Flow: [],Activity: [],Event: [],Gateway:[],StartEvent:[],Process:[]},
+    diagramElementsDefault: { Participant: [],Collaboration: [],Lane: [],Flow: [],Activity: [],Event: [],Gateway:[],StartEvent:[],Process:[]},
     debugDiagram: null,
+    diagrams: [],
   },
   computed:{
     laneExist(){
       return this.diagramElements[diagram.LANE].length > 0
     },
-    poolExist(){
+    poolExist() {
       return this.diagramElements[diagram.PARTICIPANT].length > 0
     },
-    activityExist(){
+    activityExist() {
       return this.diagramElements[diagram.ACTIVITY].length > 0
     }
 
   },
-  mounted(){
+  created() {
+    this.listDiagrams()
+  },
+  mounted() {
     this.container = $('#canvas')
     this.modeler = $('#canvas')
     this.modeler = new BpmnJS({
@@ -125,8 +132,15 @@ var app = new Vue({
     this.createNewDiagram()
     this.setupDragDrop()
   },
-  methods:{
-    diagramEvent(element){
+  methods: {
+    async listDiagrams() {
+      try {
+        this.diagrams = await axios.get('http://localhost:3000/api/v1/diagrams/')
+      } catch (error) {
+        console.error({error})        
+      }
+    },
+    diagramEvent(element) {
       this.updateDiagramElements()
       // entry bpmn-icon-task: caixinha pop up da task pra append nexttask
       // djs-direct-editing-content: menu lateral
@@ -146,9 +160,9 @@ var app = new Vue({
     },
 
     updateDiagramElements() {
-      let elements = document.body.querySelectorAll('[data-element-id]')
-      // let diagramElements = Object.assign({}, this.diagramElementsDefault)
       let diagramElements = JSON.parse(JSON.stringify(this.diagramElementsDefault))
+      let elements = document.body.querySelectorAll('[data-element-id]')
+      
       for (let element of elements)
       {
           let keyValue =  element.getAttribute('data-element-id').split('_')
@@ -167,6 +181,10 @@ var app = new Vue({
               diagramElements[diagram.LANE].push({id:diagramId, author:name, x, y})
               break
             case diagram.COLLABORATION:
+              if (element.tagName === 'svg')break
+              this.diagram.name = element.querySelector('tspan').innerHTML
+              diagramElements[diagramType].push({id:diagramId, name: this.diagram.name })
+              break
             case diagram.FLOW:
             case diagram.PROCESS:
               // x = element.transform.baseVal[0].matrix.e
@@ -194,41 +212,37 @@ var app = new Vue({
 
     async openDiagram(xml) {
       try {
-        await this.modeler.importXML(xml);
+        await this.modeler.importXML(xml)
         this.container
           .removeClass('with-error')
-          .addClass('with-diagram');
+          .addClass('with-diagram')
       } catch (err) {
 
         this.container
           .removeClass('with-diagram')
-          .addClass('with-error');
-        this.container.find('.error pre').text(err.message);
+          .addClass('with-error')
+        this.container.find('.error pre').text(err.message)
 
-        console.error(err);
+        console.error(err)
       }
     },
 
     async saveDiagram() {
       try {
-        const diagram = {}
-        diagram.xml =( await this.modeler.saveXML({ format: true })).xml
-        diagram.svg = (await this.modeler.saveSVG()).svg
-        // this.setEncoded($('#js-download-diagram'), 'diagram.bpmn', diagram.xml);
-        // this.setEncoded($('#js-download-svg'), 'diagram.svg', diagram.svg);
+        this.diagram.xml = (await this.modeler.saveXML({ format: true })).xml
+        this.diagram.svg = (await this.modeler.saveSVG()).svg
         this.saveLoading = true
         const config = { Headers:{'X-CSRFToken': window.getCookie('csrftoken')}}
         let response
         if(this.diagram.id)
-          response = await axios.put('/api/v1/diagrams/', diagram, config)
+          response = await axios.put('/api/v1/diagrams/', this.diagram, config)
         else
-          response = await axios.post('/api/v1/diagrams/', diagram, config)
-        this.debugDiagram = response
-        console.log({response})
+          response = await axios.post('/api/v1/diagrams/', this.diagram, config)
+
         this.diagram = Object.assign(this.diagram, response.data)
 
       } catch (err) {
-        console.error('Error happened saving diagram: ', err);
+        console.error('Error happened saving diagram: ', err)
       }
       finally {
         this.saveLoading = false
@@ -236,7 +250,7 @@ var app = new Vue({
     },
 
     setEncoded(link, name, data) {
-      let encodedData = encodeURIComponent(data);
+      let encodedData = encodeURIComponent(data)
       if (data) {
         link.addClass('active').attr({
           'href': 'data:application/bpmn20-xml;charset=UTF-8,' + encodedData,
