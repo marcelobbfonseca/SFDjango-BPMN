@@ -23,7 +23,37 @@
         <div class="col">
             <h1 class="dark-theme-text">Modelagem de processo</h1>
             <button type="button" class="btn btn-secondary">Abrir novo</button>
-
+            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal">
+              Abrir existente
+            </button>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">processos</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="list-group">
+                      <button 
+                        v-for="diagram in diagrams" 
+                        type="button" 
+                        class="list-group-item list-group-item-action"
+                        @click="selectDiagram(diagram)">
+                        [[ diagram.name | diagramName ]]
+                      </button>
+                      <div v-if="!diagrams.length" class="list-group-item list-group-item-action" >nenhum diagrama criado.</div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
             <button v-if="saveLoading" class="btn btn-secondary" type="button" disabled>
               <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
               Loading...
@@ -120,6 +150,11 @@ var app = new Vue({
     }
 
   },
+  filters: {
+    diagramName(value) {
+      return value || 'Sem nome'
+    },
+  },
   created() {
     this.listDiagrams()
   },
@@ -133,9 +168,14 @@ var app = new Vue({
     this.setupDragDrop()
   },
   methods: {
+    selectDiagram(diagram) {
+      this.diagram = diagram
+      this.openDiagram(this.diagram.xml)
+    },
     async listDiagrams() {
       try {
-        this.diagrams = await axios.get('http://localhost:3000/api/v1/diagrams/')
+        const response = await axios.get('http://localhost:3000/api/v1/diagrams/')
+        this.diagrams = response.data
       } catch (error) {
         console.error({error})        
       }
@@ -234,13 +274,14 @@ var app = new Vue({
         this.saveLoading = true
         const config = { Headers:{'X-CSRFToken': window.getCookie('csrftoken')}}
         let response
-        if(this.diagram.id)
-          response = await axios.put('/api/v1/diagrams/', this.diagram, config)
-        else
+        if(this.diagram.id) {
+          response = await axios.put(`/api/v1/diagrams/${this.diagram.id}/`, this.diagram, config)
+        }
+        else {
           response = await axios.post('/api/v1/diagrams/', this.diagram, config)
-
+        }
         this.diagram = Object.assign(this.diagram, response.data)
-
+        this.listDiagrams()
       } catch (err) {
         console.error('Error happened saving diagram: ', err)
       }
