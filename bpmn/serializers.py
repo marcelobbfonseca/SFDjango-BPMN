@@ -5,7 +5,7 @@ from .models import Diagram, Process
 class ProcessSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Process
-        fields = ('name', 'status')
+        fields = ('id', 'name', 'status')
 
 
 class DiagramSerializer(serializers.HyperlinkedModelSerializer):
@@ -14,4 +14,4 @@ class DiagramSerializer(serializers.HyperlinkedModelSerializer):
     
     class Meta:
         model = Diagram
-        fields = ('name','xml','svg', 'process')
+        fields = ('id', 'name', 'xml', 'svg', 'process')
