@@ -77,6 +77,7 @@ class ActivityType(models.Model):
 
     name = models.CharField(max_length=255, default='')
     lane = models.ForeignKey(Lane, on_delete=models.CASCADE, default=None)
+    diagram_id = models.CharField(max_length=255, default='')
 
     class Meta:
 
@@ -126,7 +127,6 @@ class Process(models.Model):
 class Activity(models.Model):
 
     type = models.ForeignKey(ActivityType, on_delete=models.CASCADE, default=None)
-
     class Meta:
 
         verbose_name_plural = 'Activities'
@@ -138,7 +138,7 @@ class Activity(models.Model):
 class Event(models.Model):
 
     name = models.CharField(max_length=255, choices=POSSIBLE_EVENTS, default='')
-
+    diagram_id = models.CharField(max_length=255, default='')
     class Meta:
 
         verbose_name = 'Event'
