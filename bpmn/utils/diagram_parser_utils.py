@@ -2,6 +2,7 @@ from os import name
 from bs4 import BeautifulSoup
 from bpmn.models import (ProcessType, Activity, ActivityType,
     Pool, Lane, Event, Sequence, Flow)
+from bpmn.tests.utils.process_parser_utils_tests import diagram_xml
 # laneSet(pool), lane, activity, flow, gateway, event
 class DiagramParserUtils:
 
@@ -14,15 +15,16 @@ class DiagramParserUtils:
             self.diagram_xml = diagram_xml
         content = "".join(self.diagram_xml)
         self.bs_content = BeautifulSoup(content, "lxml")
+        # self.bs_content = BeautifulSoup(content, "html.parser")
 
 
     def parse_diagram_xml(self):
         process = self.bs_content.find('bpmn:process')
 
-        pools = self.create_pools(self.bs_content)
+        pools = self.create_pools()
         lanes = []
         for pool in pools:
-            pool_lanes = self.create_lanes(pool, process)
+            pool_lanes = self.create_lanes(pool)
             lanes = lanes + pool_lanes
 
         activities, activity_types = [], []
@@ -35,24 +37,28 @@ class DiagramParserUtils:
         events = self.create_events(process)
         process_type = self.create_process_type(process)
 
-        import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
         print('alo')
         return pools, lanes, activities, activity_types, events
         
-    def create_pools(self, content):
-        lane_sets = content.find_all('bpmn:laneset')
+    def create_pools(self):
+        lane_sets = self.bs_content.find_all('bpmn:laneset')
         if len(lane_sets) == 0:
-            lane_sets.append(content.find('bpmn:laneset'))
-        participant = content.find('bpmn:participant') # testar com mais de 1 pool
+            lane_sets.append(self.bs_content.find('bpmn:laneset'))
+        participant = self.bs_content.find('bpmn:participant') # testar com mais de 1 pool
         pools = []
         for lane_set in lane_sets:
             pools.append(Pool.objects.create(name=participant.get('name')))
         return pools
 
 
-    def create_lanes(self, pool, process):
-        diagram_lanes = process.find_all('bpmn:lane')
+    def create_lanes(self, pool):
+        process = self.get_bs_process()
+        lane = process.find('bpmn:lane')
+        diagram_lanes = lane.find_next_siblings().append(lane)
         lanes = []
+        import pdb; pdb.set_trace();
+
         for lane in diagram_lanes:
             lanes.append(Lane.objects.create(name=lane.get('name'), pool=pool))
         return lanes
@@ -117,3 +123,6 @@ class DiagramParserUtils:
             
             return False
         return Event.objects.get(diagram_id=element), "Event"
+
+    def get_bs_process(self):
+        return self.bs_content.find('bpmn:process')

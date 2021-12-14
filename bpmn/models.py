@@ -56,8 +56,12 @@ class Pool(models.Model):
         verbose_name_plural = 'Pools'
 
     def __str__(self):
-
         return 'Pool@' + change_name_casing(self.name)
+
+    def __repr__(self) -> str:
+        # return super().__repr__()    
+        return f"<Pool id: {self.id}, name: '{self.name}' >"
+
 
 class Lane(models.Model):
 
