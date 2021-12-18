@@ -2,7 +2,7 @@
 version: '3'
 services:
   db:
-    image: postgres
+    image: postgres:11.14
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: bpmn
