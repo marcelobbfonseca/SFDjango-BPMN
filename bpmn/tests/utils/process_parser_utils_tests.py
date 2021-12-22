@@ -32,7 +32,6 @@ def pool(django_db_setup, django_db_blocker):
 def test_parse_diagram_xml(diagram_xml):
     parser = DiagramParserUtils(diagram_xml)
     parser.parse_diagram_xml()
-    # import pdb;pdb.set_trace();
     assert 1 == 1
 
 

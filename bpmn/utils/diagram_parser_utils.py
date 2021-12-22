@@ -2,7 +2,6 @@ from os import name
 from bs4 import BeautifulSoup
 from bpmn.models import (ProcessType, Activity, ActivityType,
     Pool, Lane, Event, Sequence, Flow)
-from bpmn.tests.utils.process_parser_utils_tests import diagram_xml
 # laneSet(pool), lane, activity, flow, gateway, event
 class DiagramParserUtils:
 
