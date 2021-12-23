@@ -41,8 +41,8 @@ class DiagramParserUtils:
             activities = activities + lane_activities
             activity_types = activity_types + lane_activity_types
 
-        sequences, flows = self.create_sequences()
         events = self.create_events(process)
+        sequences, flows = self.create_sequences()
         process_type = self.create_process_type(process)
 
         # import pdb;pdb.set_trace()
@@ -89,13 +89,12 @@ class DiagramParserUtils:
         exclusive_gates = process.find_all('bpmn:exclusivegateway')
         sequences_flow = process.find_all('bpmn:sequenceflow')
         sequences, flows = [], []
-        # import pdb;pdb.set_trace();
 
         for sequence_flow in sequences_flow:
-            sequence = Sequence.new()
-
-            source, s_type = self.identify_and_find(sequence_flow.get('sourceRef'))
-            target, t_type = self.identify_and_find(sequence_flow.get('targetRef'))
+            sequence = Sequence()
+            # import pdb;pdb.set_trace()
+            source, s_type = self.identify_and_find(sequence_flow.get('sourceref'))
+            target, t_type = self.identify_and_find(sequence_flow.get('targetref'))
             
             if s_type == "Activity":
                 sequence.current_activity = source
@@ -111,7 +110,8 @@ class DiagramParserUtils:
         return sequences, flows
 
 
-    def create_events(self, process):
+    def create_events(self):
+        process = self.get_bs_process()
         start_event = process.find('bpmn:startevent')
         end_event = process.find('bpmn:endevent')
         events = []
@@ -128,12 +128,13 @@ class DiagramParserUtils:
         pass
 
 
-    def identify_and_find(element):
+    def identify_and_find(self, element):
         if element.split("_")[0] == "Activity":
             return ActivityType.objects.get(diagram_id=element), "Activity"
         elif element.split("_")[0] == "Gateway":
-            
             return False
+        
+        # import pdb; pdb.set_trace()
         return Event.objects.get(diagram_id=element), "Event"
 
     def get_bs_process(self):

@@ -3,7 +3,7 @@ from pathlib import Path
 from SFDjango.settings import STATIC_ROOT
 from bpmn.utils.diagram_parser_utils import DiagramParserUtils
 from bs4 import BeautifulSoup
-from bpmn.models import Pool, Lane
+from bpmn.models import Pool, Lane, Event
 from django.contrib.auth.models import Group
 
 pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
@@ -48,7 +48,16 @@ def reporter_lane(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
         lane.delete()
 
-
+@pytest.fixture(scope='module')
+def create_events(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        start_event = Event.objects.create(name='Inicio', diagram_id='StartEvent_0p87cuw')
+        end_event = Event.objects.create(name='Fim', diagram_id='Event_0b0tg3w')
+    yield start_event, end_event
+    with django_db_blocker.unblock():
+        start_event.delete()
+        end_event.delete()
+    
 def test_parse_diagram_xml(diagram_xml):
     parser = DiagramParserUtils(diagram_xml)
     parser.parse_diagram_xml()
@@ -72,9 +81,20 @@ def test_create_activities(diagram_xml, reporter_lane):
     assert len(activities) == len(atypes)
     assert len(atypes) == 5
 
-def test_create_sequences():
-    pass
-def test_create_events():
-    pass
+def test_create_sequences(diagram_xml, create_events):
+    create_events
+    # need activities created
+    parser = DiagramParserUtils(diagram_xml)
+    sequences = parser.create_sequences()
+    import pdb;pdb.set_trace()
+
+    assert len(sequences) == 5
+
+def test_create_events(diagram_xml):
+    parser = DiagramParserUtils(diagram_xml)
+    events = parser.create_events()
+    assert len(events) == 2
+
+
 def test_create_process_type():
     pass
