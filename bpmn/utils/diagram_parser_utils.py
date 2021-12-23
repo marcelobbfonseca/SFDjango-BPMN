@@ -1,11 +1,20 @@
 from os import name
 from bs4 import BeautifulSoup
+from django.contrib.auth.models import Group
 from bpmn.models import (ProcessType, Activity, ActivityType,
     Pool, Lane, Event, Sequence, Flow)
 # laneSet(pool), lane, activity, flow, gateway, event
 class DiagramParserUtils:
 
     def __init__(self, diagram_xml) -> None:
+        #TODO refactor ontology
+        self.groups_map = {
+            'editor_01':'Editor',
+            'editor_chefe_01':'Editor chefe',
+            'chefe_de_redacao_01':'Chefe de redação',
+            'reporter_01':'Reporter'
+        }
+
         content = []
         if(diagram_xml == 'file'):
             with open(diagram_xml, "r") as file:
@@ -28,11 +37,11 @@ class DiagramParserUtils:
 
         activities, activity_types = [], []
         for lane in lanes:
-            lane_activities, lane_activity_types = self.create_activities(lane, process)
+            lane_activities, lane_activity_types = self.create_activities(lane)
             activities = activities + lane_activities
             activity_types = activity_types + lane_activity_types
 
-        sequences, flows = self.create_sequences(process)
+        sequences, flows = self.create_sequences()
         events = self.create_events(process)
         process_type = self.create_process_type(process)
 
@@ -44,7 +53,7 @@ class DiagramParserUtils:
         lane_sets = self.bs_content.find_all('bpmn:laneset')
         if len(lane_sets) == 0:
             lane_sets.append(self.bs_content.find('bpmn:laneset'))
-        participant = self.bs_content.find('bpmn:participant') # testar com mais de 1 pool
+        participant = self.bs_content.find('bpmn:participant') # TODO testar com mais de 1 pool
         pools = []
         for lane_set in lane_sets:
             pools.append(Pool.objects.create(name=participant.get('name')))
@@ -53,30 +62,34 @@ class DiagramParserUtils:
 
     def create_lanes(self, pool):
         process = self.get_bs_process()
-        lane = process.find('bpmn:lane')
-        diagram_lanes = lane.find_next_siblings().append(lane)
+        first_lane = process.find('bpmn:lane')
+        diagram_lanes = first_lane.find_next_siblings()
+        diagram_lanes.append(first_lane)
         lanes = []
-        import pdb; pdb.set_trace();
-
         for lane in diagram_lanes:
-            lanes.append(Lane.objects.create(name=lane.get('name'), pool=pool))
+            name = lane.get('name')
+            group = Group.objects.get(name=self.groups_map[name])
+            lanes.append(Lane.objects.create(name=name, pool=pool, responsable=group))
         return lanes
 
 
-    def create_activities(self, lane, process):
+    def create_activities(self, lane):
+        process = self.get_bs_process()
         tasks = process.find_all('bpmn:task')
         activity_types, activities = [], []
         for task in tasks:
-            type = ActivityType.objects.create(name=task.get('name'), lane=lane)
-            activity = Activity.objects.create(type=type)
-            activity_types.append(type)
+            atype = ActivityType.objects.create(name=task.get('name'), lane=lane)
+            activity = Activity.objects.create(type=atype)
+            activity_types.append(atype)
             activities.append(activity)
         return activities, activity_types
 
-    def create_sequences(self, process):
+    def create_sequences(self):
+        process = self.get_bs_process()
         exclusive_gates = process.find_all('bpmn:exclusivegateway')
         sequences_flow = process.find_all('bpmn:sequenceflow')
         sequences, flows = [], []
+        # import pdb;pdb.set_trace();
 
         for sequence_flow in sequences_flow:
             sequence = Sequence.new()
