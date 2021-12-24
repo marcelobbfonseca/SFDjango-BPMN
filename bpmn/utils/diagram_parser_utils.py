@@ -27,8 +27,6 @@ class DiagramParserUtils:
 
 
     def parse_diagram_xml(self):
-        process = self.bs_content.find('bpmn:process')
-
         pools = self.create_pools()
         lanes = []
         for pool in pools:
@@ -41,13 +39,11 @@ class DiagramParserUtils:
             activities = activities + lane_activities
             activity_types = activity_types + lane_activity_types
 
-        events = self.create_events(process)
-        sequences, flows = self.create_sequences()
-        process_type = self.create_process_type(process)
+        events = self.create_events()
+        sequences, flow = self.create_sequences()
+        process_type = self.create_process_type(flow)
 
-        # import pdb;pdb.set_trace()
-        print('alo')
-        return pools, lanes, activities, activity_types, events
+        return pools, lanes, activities, sequences, activity_types, events, process_type
         
     def create_pools(self):
         lane_sets = self.bs_content.find_all('bpmn:laneset')
@@ -78,7 +74,7 @@ class DiagramParserUtils:
         tasks = process.find_all('bpmn:task')
         activity_types, activities = [], []
         for task in tasks:
-            atype = ActivityType.objects.create(name=task.get('name'), lane=lane)
+            atype = ActivityType.objects.create(name=task.get('name'), lane=lane, diagram_id=task.get('id'))
             activity = Activity.objects.create(type=atype)
             activity_types.append(atype)
             activities.append(activity)
@@ -88,26 +84,31 @@ class DiagramParserUtils:
         process = self.get_bs_process()
         exclusive_gates = process.find_all('bpmn:exclusivegateway')
         sequences_flow = process.find_all('bpmn:sequenceflow')
-        sequences, flows = [], []
+        sequences = []
+        if len(exclusive_gates):
+            for gateway in exclusive_gates:
+                # find source
+                incoming_seq_id = gateway.find('bpmn:incoming')
+                source_seq = process.find('bpmn:sequenceflow', {"id": incoming_seq_id.text})
+                gateway_source = source_seq.get('sourceref')
+
+                target_seqs_ids = incoming_seq_id.find_next_siblings()
+                for target_id in target_seqs_ids:
+                    # merge target_seq with source and target(kill gateway) 
+                    target_seq = process.find('bpmn:sequenceflow', {"id": target_id.text})
+                    target_seq['sourceref'] = gateway_source
+                    # create sequence
+                    sequence = self.create_sequence(target_seq)
+                    if(sequence):
+                        sequences.append(sequence)
 
         for sequence_flow in sequences_flow:
-            sequence = Sequence()
-            # import pdb;pdb.set_trace()
-            source, s_type = self.identify_and_find(sequence_flow.get('sourceref'))
-            target, t_type = self.identify_and_find(sequence_flow.get('targetref'))
-            
-            if s_type == "Activity":
-                sequence.current_activity = source
-            else:
-                sequence.current_event = source
-            if t_type == "event":
-                sequence.current_activity = target
-            else:
-                sequence.current_event = target
-
-            sequence.save()
-            sequences.append(sequence)
-        return sequences, flows
+            sequence = self.create_sequence(sequence_flow)
+            if(sequence):
+                sequences.append(sequence)
+        
+        flow = Flow.objects.create(sequences=sequences)
+        return sequences, flow
 
 
     def create_events(self):
@@ -124,18 +125,38 @@ class DiagramParserUtils:
         return events
         
 
-    def create_process_type(self, process):
-        pass
-
+    def create_process_type(self, flow):
+        participant = self.bs_content.find('bpmn:participant')
+        return ProcessType.objects.create(name=participant.get('name'), flow=flow)
 
     def identify_and_find(self, element):
         if element.split("_")[0] == "Activity":
             return ActivityType.objects.get(diagram_id=element), "Activity"
         elif element.split("_")[0] == "Gateway":
-            return False
-        
-        # import pdb; pdb.set_trace()
+            return None , "Gateway"
+
         return Event.objects.get(diagram_id=element), "Event"
 
     def get_bs_process(self):
         return self.bs_content.find('bpmn:process')
+
+    def create_sequence(self, sequence_flow):
+        sequence = Sequence()
+        seq_source, s_type = self.identify_and_find(sequence_flow.get('sourceref'))
+        target, t_type = self.identify_and_find(sequence_flow.get('targetref'))
+        
+        # Ignore gateway cases
+        if s_type == "Gateway" or t_type == "Gateway":
+            return None
+        if s_type == "Activity":
+            sequence.current_activity = seq_source
+        elif s_type == "event":
+            sequence.current_event = seq_source
+
+        if t_type == "Activity":
+            sequence.current_activity = target
+        elif t_type == "event":
+            sequence.current_event = target
+
+        sequence.save()
+        return sequence

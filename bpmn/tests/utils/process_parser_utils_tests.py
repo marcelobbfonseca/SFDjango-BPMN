@@ -58,7 +58,8 @@ def create_events(django_db_setup, django_db_blocker):
         start_event.delete()
         end_event.delete()
     
-def test_parse_diagram_xml(diagram_xml):
+def test_parse_diagram_xml(diagram_xml, groups):
+    groups
     parser = DiagramParserUtils(diagram_xml)
     parser.parse_diagram_xml()
     assert 1 == 1
@@ -86,8 +87,6 @@ def test_create_sequences(diagram_xml, create_events):
     # need activities created
     parser = DiagramParserUtils(diagram_xml)
     sequences = parser.create_sequences()
-    import pdb;pdb.set_trace()
-
     assert len(sequences) == 5
 
 def test_create_events(diagram_xml):
