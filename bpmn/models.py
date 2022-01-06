@@ -90,7 +90,8 @@ class ActivityType(models.Model):
 
     def __str__(self):
 
-        return 'Activity@' + change_name_casing(self.name)
+        return 'Activity@' + change_name_casing(self.name) + ' '
+        return f"<Act_Type id: {self.id}, name: '{self.name}', diagram_id: '{self.diagram_id}' >"
 
 ####################################### Instances of structures #######################################
     

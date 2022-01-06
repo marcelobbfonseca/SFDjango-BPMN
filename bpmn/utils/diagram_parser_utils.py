@@ -39,11 +39,11 @@ class DiagramParserUtils:
             activities = activities + lane_activities
             activity_types = activity_types + lane_activity_types
 
-        events = self.create_events()
-        sequences, flow = self.create_sequences()
+        self.create_events()
+        _, flow = self.create_sequences()
         process_type = self.create_process_type(flow)
 
-        return pools, lanes, activities, sequences, activity_types, events, process_type
+        return process_type
         
     def create_pools(self):
         lane_sets = self.bs_content.find_all('bpmn:laneset')
@@ -54,7 +54,6 @@ class DiagramParserUtils:
         for lane_set in lane_sets:
             pools.append(Pool.objects.create(name=participant.get('name')))
         return pools
-
 
     def create_lanes(self, pool):
         process = self.get_bs_process()
@@ -68,12 +67,15 @@ class DiagramParserUtils:
             lanes.append(Lane.objects.create(name=name, pool=pool, responsable=group))
         return lanes
 
-
     def create_activities(self, lane):
         process = self.get_bs_process()
-        tasks = process.find_all('bpmn:task')
+        
+        lane_xml = process.find('bpmn:lane', {'name': lane.name })
+        lane_tasks_ids = self.find_lane_tasks_ids(lane_xml)
+
         activity_types, activities = [], []
-        for task in tasks:
+        for task_id in lane_tasks_ids:
+            task = process.find('bpmn:task', {'id': task_id.text})
             atype = ActivityType.objects.create(name=task.get('name'), lane=lane, diagram_id=task.get('id'))
             activity = Activity.objects.create(type=atype)
             activity_types.append(atype)
@@ -107,9 +109,9 @@ class DiagramParserUtils:
             if(sequence):
                 sequences.append(sequence)
         
-        flow = Flow.objects.create(sequences=sequences)
+        flow = Flow.objects.create()
+        flow.sequences.set(sequences)
         return sequences, flow
-
 
     def create_events(self):
         process = self.get_bs_process()
@@ -124,13 +126,13 @@ class DiagramParserUtils:
             events.append(event)
         return events
         
-
     def create_process_type(self, flow):
         participant = self.bs_content.find('bpmn:participant')
         return ProcessType.objects.create(name=participant.get('name'), flow=flow)
 
     def identify_and_find(self, element):
         if element.split("_")[0] == "Activity":
+            # import pdb; pdb.set_trace()
             return ActivityType.objects.get(diagram_id=element), "Activity"
         elif element.split("_")[0] == "Gateway":
             return None , "Gateway"
@@ -148,6 +150,7 @@ class DiagramParserUtils:
         # Ignore gateway cases
         if s_type == "Gateway" or t_type == "Gateway":
             return None
+
         if s_type == "Activity":
             sequence.current_activity = seq_source
         elif s_type == "event":
@@ -160,3 +163,14 @@ class DiagramParserUtils:
 
         sequence.save()
         return sequence
+
+    def find_lane_tasks_ids(self, lane_xml):
+        first_child = lane_xml.find('bpmn:flownoderef')
+        lane_nodes = first_child.find_next_siblings()
+        lane_nodes.append(first_child)
+        tasks = []
+        for node in lane_nodes:
+            if node.text.split('_')[0] == "Activity":
+                tasks.append(node)
+        
+        return tasks
