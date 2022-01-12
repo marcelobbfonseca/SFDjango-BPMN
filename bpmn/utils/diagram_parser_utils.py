@@ -26,7 +26,7 @@ class DiagramParserUtils:
         # self.bs_content = BeautifulSoup(content, "html.parser")
 
 
-    def parse_diagram_xml(self):
+    def parse_diagram_xml_and_create_process(self):
         pools = self.create_pools()
         lanes = []
         for pool in pools:
@@ -132,7 +132,6 @@ class DiagramParserUtils:
 
     def identify_and_find(self, element):
         if element.split("_")[0] == "Activity":
-            # import pdb; pdb.set_trace()
             return ActivityType.objects.get(diagram_id=element), "Activity"
         elif element.split("_")[0] == "Gateway":
             return None , "Gateway"
@@ -153,13 +152,14 @@ class DiagramParserUtils:
 
         if s_type == "Activity":
             sequence.current_activity = seq_source
-        elif s_type == "event":
+        elif s_type == "Event":
             sequence.current_event = seq_source
-
+        
+        sequence.save()
         if t_type == "Activity":
-            sequence.current_activity = target
-        elif t_type == "event":
-            sequence.current_event = target
+            sequence.next_activity_options.add(target)
+        elif t_type == "Event":
+            sequence.next_event_options.add(target)
 
         sequence.save()
         return sequence

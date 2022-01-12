@@ -173,14 +173,15 @@ class Sequence(models.Model):
         return str(self.current_activity or self.current_event)
 
     def get_next_opts(self):
+        return self.next_activities() + self.next_events()
 
-        return [str(item) for item in
-            [opt for opt in self.next_activity_options.all()] + \
-            [opt for opt in self.next_event_options.all()]
-            ]
+    def next_activities(self):
+        return [ activity.name for activity in self.next_activity_options.all()]
+
+    def next_events(self):
+        return [ event.name for event in self.next_event_options.all()]
 
     def __str__(self):
-
         return self.get_current_state() + ' --> ' + ' or '.join(self.get_next_opts())
 
 
