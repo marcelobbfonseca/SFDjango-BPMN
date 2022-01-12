@@ -303,14 +303,14 @@ var app = new Vue({
     },
     registerFileDrop() {
 
-      function handleFileSelect(e) {
+      handleFileSelect = (e) => {
         e.stopPropagation();
         e.preventDefault();
-        var files = e.dataTransfer.files;
-        var file = files[0];
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          var xml = e.target.result;
+        let files = e.dataTransfer.files;
+        let file = files[0];
+        let reader = new FileReader();
+        reader.onload = (e) => {
+          let xml = e.target.result;
           this.openDiagram(xml);
         };
         reader.readAsText(file);
