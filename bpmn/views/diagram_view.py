@@ -15,15 +15,15 @@ class DiagramViewset(ModelViewSet):
         serializer = DiagramSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         diagram = serializer.save()
-        diagram.associate_with_process()
-
+        
         parser = DiagramParserUtils(diagram.xml)
-        diagram.process = parser.parse_diagram_xml_and_create_process()
+        diagram.process_type = parser.parse_diagram_xml_and_create_process()
+        
         diagram.save()
         return JsonResponse(serializer.data)
         
     
     def list(self, request, format=None, *args, **kwargs):
-        queryset = Diagram.objects.all().values('id', 'name', 'process', 'xml', 'svg')
+        queryset = Diagram.objects.all().values('id', 'name', 'process_type', 'xml', 'svg')
         serializer = DiagramSerializer(queryset, many=True)
         return Response(serializer.data)

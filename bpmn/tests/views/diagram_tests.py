@@ -2,17 +2,23 @@ import pytest, json
 from rest_framework.test import APIClient
 from bpmn.models import Diagram
 from bpmn.views import diagram_view
+from SFDjango.settings import STATIC_ROOT
+from pathlib import Path
+from django.contrib.auth.models import Group
 
 pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
 
 
 @pytest.fixture(scope='module')
 def diagram(django_db_setup, django_db_blocker):
+    xml = Path(STATIC_ROOT + '/bpmn/diagrams_files/simple_news_process_diagram.bpmn').read_text()
+    xml = xml.replace('\n', '')
+
     with django_db_blocker.unblock():
         diagram = Diagram.objects.create(
                 name='my diagram', 
                 svg='', 
-                xml=''
+                xml=xml
         )
     yield diagram
     with django_db_blocker.unblock():
@@ -28,9 +34,11 @@ def view():
 
 @pytest.fixture(scope='module')
 def diagram_params():
+    xml = Path(STATIC_ROOT + '/bpmn/diagrams_files/simple_news_process_diagram.bpmn').read_text()
+    xml = xml.replace('\n', '')
     return {
         'name': 'my diagram',
-        'xml': '<?xml version="1.0" encoding="UTF-8"?><bpmn:definitions></bpmn:definitions>',
+        'xml': xml,
         'svg': """
             <?xml version=\"1.0\" encoding=\"utf-8\"?>\n
             <!-- created with bpmn-js / http://bpmn.io -->\n
@@ -107,7 +115,15 @@ def diagram_params():
         """
     }
 
-
+@pytest.fixture(scope='module')
+def groups(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        group1 = Group.objects.create(name='Editor')
+        group2 = Group.objects.create(name='Reporter')
+    yield (group1, group2)
+    with django_db_blocker.unblock():
+        group1.delete()
+        group2.delete()
 
 
 def test_list(client, diagram):
@@ -118,6 +134,7 @@ def test_list(client, diagram):
     assert response.status_code == 200
     assert content_body[0]['name'] == 'my diagram'
 
-def test_create(client, diagram_params):
+def test_create(client, diagram_params, groups):
+    groups
     response = client.post('/api/v1/diagrams/',diagram_params, format='json')
     assert response.status_code == 200

@@ -190,7 +190,7 @@ class Diagram(models.Model):
     name = models.CharField(max_length=255, default='')
     xml = models.TextField(default='')
     svg = models.TextField(default='')
-    process = models.OneToOneField(Process, on_delete=models.SET_NULL, default=None, null=True, blank=True)
+    process_type = models.OneToOneField(ProcessType, on_delete=models.SET_NULL, default=None, null=True, blank=True)
     def __str__(self):
         return "Diagram %s" % self.name
 
