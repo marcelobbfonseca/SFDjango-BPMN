@@ -76,20 +76,21 @@ def get_possible_events(process):
 
 def update_process(process, activity_index=0, event_type='', update=True):
 
-    if event_type == POSSIBLE_EVENTS[0][0]: # start process
+    if event_type == POSSIBLE_EVENTS[0][0] or event_type == "Inicio": # start process
 
         act = Activity.objects.create(type=list(get_process_init(process).next_activity_options.all())[0])
         act.save()
         process.status = PROCESS_POSSIBLE_STATUSES[1][0]
 
-    elif event_type == POSSIBLE_EVENTS[1][0]: # end process
+    elif event_type == POSSIBLE_EVENTS[1][0] or event_type == "Fim": # end process
 
         act = None
         process.status = PROCESS_POSSIBLE_STATUSES[2][0]
 
     else:
-
-        act = Activity.objects.create(type=get_possible_activities(process)[activity_index])
+        # import pdb; pdb.set_trace()
+        process_type = get_possible_activities(process)[activity_index]
+        act = Activity.objects.create(type=process_type)
         act.save()
 
     if process.current:
