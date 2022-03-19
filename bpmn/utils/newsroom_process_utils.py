@@ -1,6 +1,7 @@
 from django.db.models import query
 from bpmn.models import Ontology
 import rdflib
+from bpmn.utils.string_utils import snake_case
 
 # P O ta vazio?(task novo)
 # 	Pega author Sparql com S ?P ?O.
@@ -62,21 +63,21 @@ class NewsroomProcessUtils:
 
     return verified_tasks
 
-  # 		checagem de tarefas(triplas) que faltam pro processo
-  # 		  tasks_obrigatorias = sparql com nome do processo (S P ?O)
   def verify_process_missing_tasks(self, laneTasks):
-  #   process_tasks = self.get_process_tasks()
-  #   existing_tasks = []
-  #   for lane in laneTasks:
-  #       for task in laneTasks[lane]:
-  #           if task and task.strip():
-  #             continue
-            
-  #           existing_tasks.append(task)
+    process_tasks = self.get_process_tasks('produção_da_publicação')
+    for lane in laneTasks:
+        for task in laneTasks[lane]:
+            for requiredTask in process_tasks:
+              # TODO remover _0N de individuos
+              taskname = task['description'].split('_')[0]
+              if snake_case(taskname) == requiredTask:
+                process_tasks.remove(requiredTask)
 
-    return {}
+    return process_tasks
 
-  def get_process_tasks(process_name):
-  #   # process_name == pool
-  #   # self.newsroom_process sparql
-    return {}
+  def get_process_tasks(self, process_name):
+    name = snake_case(process_name)
+    query_string =  "SELECT ?task WHERE {{ news:{} news:contém ?task .}}".format(name)
+    result = self.graph.query(query_string, initNs={"news": self.newsroom_ontology.prefix})
+    tasks = [ str(row.task) for row in result]
+    return Ontology.remove_prefixes(tasks)

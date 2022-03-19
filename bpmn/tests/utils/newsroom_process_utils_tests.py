@@ -89,5 +89,20 @@ def test_verify_tasks_by_lanes(domain_ontology, newsroom_process_utils):
     assert verified_tasks['editor_01'][0]['ok'] == True
     assert verified_tasks['editor_01'][0]['id'] == '04csnbg'
 
-def test_verify_process_missing_tasks():
-    assert 1 == 1
+#next tests
+def test_verify_process_missing_tasks(domain_ontology, newsroom_process_utils):
+    laneTasks = { 
+        'editor_01': [
+            {'id': '04csnbg', 'description': 'revisa matéria_01', 'x': 350, 'y': 70}, 
+            {'id': '09l1mrk', 'description': 'reescreve matéria_01', 'x': 520, 'y': 70}
+        ], 
+        'reporter_01': [
+            {'id': '0m5f9rd', 'description': 'publica matéria_01', 'x': 520, 'y': 200}
+        ]
+    }
+    missing_tasks = newsroom_process_utils.verify_process_missing_tasks(laneTasks)
+    assert len(missing_tasks) == 6
+
+def test_get_process_tasks(domain_ontology, newsroom_process_utils):
+    tasks = newsroom_process_utils.get_process_tasks('produção_da_publicação')
+    assert len(tasks) == 9
