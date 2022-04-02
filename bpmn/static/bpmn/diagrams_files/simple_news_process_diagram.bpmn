@@ -43,7 +43,7 @@
       <bpmn:incoming>Flow_1w7a7bb</bpmn:incoming>
       <bpmn:outgoing>Flow_1onzb71</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Activity_1ljpxl3" name="publíca matéria">
+    <bpmn:task id="Activity_1ljpxl3" name="publica matéria">
       <bpmn:incoming>Flow_0qnc0ss</bpmn:incoming>
       <bpmn:outgoing>Flow_0v6zzzo</bpmn:outgoing>
     </bpmn:task>

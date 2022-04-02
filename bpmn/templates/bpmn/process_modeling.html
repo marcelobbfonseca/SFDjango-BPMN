@@ -184,12 +184,8 @@ var app = new Vue({
       this.updateDiagramElements()
       // entry bpmn-icon-task: caixinha pop up da task pra append nexttask
       // djs-direct-editing-content: menu lateral
-      // console.log({element})
-      this.debug = element
       if(element.target.className === "entry bpmn-icon-task" || element.target.className === "djs-direct-editing-content")
       {
-        // console.log({element})
-        this.debug= element
         axios.post('/ontology-suggestion', { elements:this.diagramElements, eventTrigger: element}).then(response => {
           this.response = response.data
           this.validateTasks(response.data.tasksStatuses)
@@ -234,7 +230,7 @@ var app = new Vue({
             default: // Event, flow, Activity, StartEvent
               let description = ''
               for(let tspan of element.querySelectorAll('tspan')) { 
-                description = description + tspan.innerHTML + ' ' 
+                description = description + tspan.innerHTML.trim() + ' '
               }
               description = this.trimText(description)
               x = element.transform.baseVal[0].matrix.e
@@ -243,7 +239,7 @@ var app = new Vue({
               break
           }
       }
-      this.diagramElements = Object.assign({}, diagramElements)
+      this.diagramElements = Object.assign({}, diagramElements);
     },
 
     createNewDiagram() {
@@ -354,12 +350,21 @@ var app = new Vue({
       let taskElement =  document.querySelector(`[data-element-id="Activity_${task.id}"]`)
       taskElement.firstElementChild.firstElementChild.style.stroke = color
     },
-    trimText(words){
-      if(!Array.isArray(words))return ''
+    trimText(text){
+      if(!Array.isArray(text)){
+        if(text.length){
+          words = text.split(' ');
+          if(words.length === 1)return text.trim();
+          let trimmedText = '';
+          words.forEach( word => { if(word.length)trimmedText = trimmedText + `${word} ` });
+          return trimmedText.trim();
+        } 
+        return '';
+      }
 
-      let trimmedText = ''
-      words.forEach(word => { if(word.length)trimmedText = trimmedText + `${word} ` } ) 
-      return trimmedText.trim()
+      let trimmedText = '';
+      text.forEach(word => { if(word.length)trimmedText = trimmedText + `${word} ` } );
+      return trimmedText.trim();
     },
   } //methods
 
