@@ -43,7 +43,7 @@ def reporter_lane(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
         pool = Pool.objects.create(name='processo da noticia')
         group = Group.objects.create(name='Reporter')
-        lane = Lane.objects.create(name='reporter_01', pool=pool, responsable=group)
+        lane = Lane.objects.create(name='reporter', pool=pool, responsable=group)
     yield lane 
     with django_db_blocker.unblock():
         lane.delete()
@@ -53,7 +53,7 @@ def editor_lane(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
         pool = Pool.objects.create(name='processo da noticia')
         group = Group.objects.create(name='Editor')
-        lane = Lane.objects.create(name='editor_01', pool=pool, responsable=group)
+        lane = Lane.objects.create(name='editor', pool=pool, responsable=group)
     yield lane 
     with django_db_blocker.unblock():
         lane.delete()

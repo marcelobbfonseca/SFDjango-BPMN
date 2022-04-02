@@ -5,7 +5,7 @@
   </bpmn:collaboration>
   <bpmn:process id="Process_0z8ptji" isExecutable="false">
     <bpmn:laneSet id="LaneSet_0fhwxt0">
-      <bpmn:lane id="Lane_10b7wlj" name="editor_01">
+      <bpmn:lane id="Lane_10b7wlj" name="editor">
         <bpmn:flowNodeRef>StartEvent_0p87cuw</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1oz5z6y</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0nahmqi</bpmn:flowNodeRef>
@@ -13,7 +13,7 @@
         <bpmn:flowNodeRef>Activity_1ljpxl3</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0b0tg3w</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_10jc25a" name="reporter_01">
+      <bpmn:lane id="Lane_10jc25a" name="reporter">
         <bpmn:flowNodeRef>Activity_0xbckuk</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0i73ywj</bpmn:flowNodeRef>
       </bpmn:lane>
@@ -21,15 +21,15 @@
     <bpmn:startEvent id="StartEvent_0p87cuw">
       <bpmn:outgoing>Flow_0e9vjos</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:task id="Activity_1oz5z6y" name="designa reporter_01">
+    <bpmn:task id="Activity_1oz5z6y" name="designa reporter">
       <bpmn:incoming>Flow_0e9vjos</bpmn:incoming>
       <bpmn:outgoing>Flow_09abrl7</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Activity_0xbckuk" name="produz matéria_01">
+    <bpmn:task id="Activity_0xbckuk" name="produz matéria">
       <bpmn:incoming>Flow_09abrl7</bpmn:incoming>
       <bpmn:outgoing>Flow_1x5kkry</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Activity_0nahmqi" name="revisa matéria_01">
+    <bpmn:task id="Activity_0nahmqi" name="revisa matéria">
       <bpmn:incoming>Flow_1x5kkry</bpmn:incoming>
       <bpmn:incoming>Flow_1onzb71</bpmn:incoming>
       <bpmn:outgoing>Flow_1wzqehz</bpmn:outgoing>
@@ -39,11 +39,11 @@
       <bpmn:outgoing>Flow_1w7a7bb</bpmn:outgoing>
       <bpmn:outgoing>Flow_0qnc0ss</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="Activity_0i73ywj" name="reescreve matéria_01">
+    <bpmn:task id="Activity_0i73ywj" name="reescreve matéria">
       <bpmn:incoming>Flow_1w7a7bb</bpmn:incoming>
       <bpmn:outgoing>Flow_1onzb71</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Activity_1ljpxl3" name="publíca matéria_01">
+    <bpmn:task id="Activity_1ljpxl3" name="publíca matéria">
       <bpmn:incoming>Flow_0qnc0ss</bpmn:incoming>
       <bpmn:outgoing>Flow_0v6zzzo</bpmn:outgoing>
     </bpmn:task>

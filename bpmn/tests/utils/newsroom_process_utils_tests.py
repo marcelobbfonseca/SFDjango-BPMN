@@ -30,23 +30,23 @@ def newsroom_process_utils(django_db_setup, django_db_blocker):
 
 def test_verify_task_author(domain_ontology, newsroom_process_utils):
     domain_ontology
-    task = {"id":"04csnbg","description":"revisa matéria_01","x":350,"y":70}
-    author = 'editor_01'
+    task = {"id":"04csnbg","description":"revisa matéria","x":350,"y":70}
+    author = 'editor'
     result, _ = newsroom_process_utils.verify_task_author(author, task)
     assert result == True
 
 
 def test_verify_task_wrong_author(domain_ontology, newsroom_process_utils):
     domain_ontology
-    task = {"id":"04csnbg","description":"revisa matéria_01","x":350,"y":70}
-    author = 'reporter_01'
+    task = {"id":"04csnbg","description":"revisa matéria","x":350,"y":70}
+    author = 'reporter'
     _, result = newsroom_process_utils.verify_task_author(author, task)
-    assert result[0] == "editor_01"
+    assert result[0] == "editor"
 
 
 def test_get_lane_tasks(domain_ontology, newsroom_process_utils):
     domain_ontology
-    author = "reporter_01"
+    author = "reporter"
     tasks = newsroom_process_utils.get_lane_tasks(author)
     assert len(tasks) == 2
 
@@ -55,13 +55,13 @@ def test_get_tasks_by_lane():
         "Participant":[{"id":"0xue50s","name":""}],
         "Collaboration":[{"id":"0ete02m"},{"id":"0ete02m"}],
         "Lane":[
-            {"id":"1uknwdf","author":"editor_01","x":198,"y":40},
-            {"id":"1mgmwrm","author":"reporter_01","x":198,"y":165}],
+            {"id":"1uknwdf","author":"editor","x":198,"y":40},
+            {"id":"1mgmwrm","author":"reporter","x":198,"y":165}],
         "Flow":[{"id":"1u1gs3n"},{"id":"00cgsce"},{"id":"1t4sqfy"},{"id":"03f070z"},{"id":"1u1gs3n"},{"id":"00cgsce"},{"id":"1t4sqfy"}],
         "Activity":[
-            {"id":"04csnbg","description":"revisa matéria_01","x":350,"y":70},
-            {"id":"09l1mrk","description":"reescreve matéria_01","x":520,"y":70},
-            {"id":"0m5f9rd","description":"publica matéria_01","x":520,"y":200}
+            {"id":"04csnbg","description":"revisa matéria","x":350,"y":70},
+            {"id":"09l1mrk","description":"reescreve matéria","x":520,"y":70},
+            {"id":"0m5f9rd","description":"publica matéria","x":520,"y":200}
         ],
         "Event":[{"id":"1uqtwc9","description":None,"x":672,"y":222}],
         "Gateway":[],
@@ -69,35 +69,35 @@ def test_get_tasks_by_lane():
         "Process":[]
     }
     tasks_by_lane = ProcessUtils.get_tasks_by_lane(elements)
-    assert len(tasks_by_lane['editor_01']) == 2
-    assert len(tasks_by_lane['reporter_01']) == 1
+    assert len(tasks_by_lane['editor']) == 2
+    assert len(tasks_by_lane['reporter']) == 1
 
 
 #se escreve task errada, nao vai achar como arruma
 def test_verify_tasks_by_lanes(domain_ontology, newsroom_process_utils):
     domain_ontology
     laneTasks = {
-        'editor_01': [
-            {'id': '04csnbg', 'description': 'revisa matéria_01', 'x': 350, 'y': 70},  
-            {'id': '09l1mrk', 'description': 'reescreve matéria_01', 'x': 520, 'y': 70}
+        'editor': [
+            {'id': '04csnbg', 'description': 'revisa matéria', 'x': 350, 'y': 70},  
+            {'id': '09l1mrk', 'description': 'reescreve matéria', 'x': 520, 'y': 70}
         ], 
-        'reporter_01': [
-            {'id': '0m5f9rd', 'description': 'publica matéria_01', 'x': 520, 'y': 200}
+        'reporter': [
+            {'id': '0m5f9rd', 'description': 'publica matéria', 'x': 520, 'y': 200}
         ]
     }
     verified_tasks = newsroom_process_utils.verify_tasks_by_lanes(laneTasks)
-    assert verified_tasks['editor_01'][0]['ok'] == True
-    assert verified_tasks['editor_01'][0]['id'] == '04csnbg'
+    assert verified_tasks['editor'][0]['ok'] == True
+    assert verified_tasks['editor'][0]['id'] == '04csnbg'
 
 #next tests
 def test_verify_process_missing_tasks(domain_ontology, newsroom_process_utils):
     laneTasks = { 
-        'editor_01': [
-            {'id': '04csnbg', 'description': 'revisa matéria_01', 'x': 350, 'y': 70}, 
-            {'id': '09l1mrk', 'description': 'reescreve matéria_01', 'x': 520, 'y': 70}
+        'editor': [
+            {'id': '04csnbg', 'description': 'revisa matéria', 'x': 350, 'y': 70}, 
+            {'id': '09l1mrk', 'description': 'reescreve matéria', 'x': 520, 'y': 70}
         ], 
-        'reporter_01': [
-            {'id': '0m5f9rd', 'description': 'publica matéria_01', 'x': 520, 'y': 200}
+        'reporter': [
+            {'id': '0m5f9rd', 'description': 'publica matéria', 'x': 520, 'y': 200}
         ]
     }
     missing_tasks = newsroom_process_utils.verify_process_missing_tasks(laneTasks)

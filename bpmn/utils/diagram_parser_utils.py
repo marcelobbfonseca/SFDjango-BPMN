@@ -7,12 +7,11 @@ from bpmn.models import (ProcessType, Activity, ActivityType,
 class DiagramParserUtils:
 
     def __init__(self, diagram_xml) -> None:
-        #TODO refactor ontology
         self.groups_map = {
-            'editor_01':'Editor',
-            'editor_chefe_01':'Editor chefe',
-            'chefe_de_redacao_01':'Chefe de redação',
-            'reporter_01':'Reporter'
+            'editor':'Editor',
+            'editor_chefe':'Editor chefe',
+            'chefe_de_redacao':'Chefe de redação',
+            'reporter':'Reporter'
         }
 
         content = []
