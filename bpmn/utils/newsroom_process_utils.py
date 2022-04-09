@@ -31,8 +31,8 @@ class NewsroomProcessUtils:
       return tasks
 
   def verify_task_author(self, author, task): 
-    # retorna true(ASK) e array correçao(SELECT) se tiver
-
+    # retorna true(ASK) e array correçao(SELECT) se tiver 
+    # import pdb; pdb.set_trace()
     predicate, obj = task['description'].split(' ')
     query_string = "ASK {{ news:{} news:{} news:{} .}}".format(author, predicate, obj)
     is_true = self.graph.query(query_string, initNs={"news": self.newsroom_ontology.prefix})
@@ -67,11 +67,10 @@ class NewsroomProcessUtils:
     process_tasks = self.get_process_tasks('produção_da_publicação')
     for lane in laneTasks:
         for task in laneTasks[lane]:
-            for requiredTask in process_tasks:
-              # TODO remover _0N de individuos
-              taskname = task['description'].split('_')[0]
-              if snake_case(taskname) == requiredTask:
-                process_tasks.remove(requiredTask)
+          for requiredTask in process_tasks:
+            taskname = task['description']
+            if snake_case(taskname) == requiredTask:
+              process_tasks.remove(requiredTask)
 
     return process_tasks
 

@@ -34,7 +34,6 @@ class OntologySuggestionView(View):
         body_unicode = request.body.decode('utf-8')
         params = json.loads(body_unicode) # try
         result = {}
-
         newsroom_process_utils = NewsroomProcessUtils()
         if('elements' in params):
             laneTasks = ProcessUtils.get_tasks_by_lane(params['elements'])
@@ -42,18 +41,10 @@ class OntologySuggestionView(View):
             if(len(params['elements']['Lane'])):
                 result['tasksStatuses'] = newsroom_process_utils.verify_tasks_by_lanes(laneTasks)
 
-            # if('Participant' in params['elements']):
-                # result['missing_tasks'] = newsroom_process_utils.verify_process_missing_tasks(laneTasks)
+            if('Participant' in params['elements']):
+                result['missing_tasks'] = newsroom_process_utils.verify_process_missing_tasks(laneTasks)
+
         return JsonResponse(result)
-
-
-
-# @method_decorator(csrf_exempt, name='dispatch')
-# class DiagramAPI(mixins.ListModelMixin,
-#               mixins.CreateModelMixin):
-#             #   generics.GenericAPIView):
-#     model = Diagram
-#     queryset = Diagram.objecst.all()
 
 
 class ProcessCreate(FormView):

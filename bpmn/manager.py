@@ -88,7 +88,6 @@ def update_process(process, activity_index=0, event_type='', update=True):
         process.status = PROCESS_POSSIBLE_STATUSES[2][0]
 
     else:
-        # import pdb; pdb.set_trace()
         process_type = get_possible_activities(process)[activity_index]
         act = Activity.objects.create(type=process_type)
         act.save()
