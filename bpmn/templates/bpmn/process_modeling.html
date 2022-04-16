@@ -7,20 +7,43 @@
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
 <style>
 .dark-theme{
-  background-color: rgb(19, 34, 34);
+  background-color: #132222;
 }
 .dark-theme-text {
   color: aliceblue;
 }
 .canvas-bg{
-  background-color: rgb(50, 102, 102);
+  background-color: #326666;
 }
+
+.btn-ming{
+  background-color: #998DA0;
+  border-color: #998DA0;
+  color: white;
+}
+
+.wrapper {
+  height: auto;
+  min-height: 450px;
+  width: 100%;
+  background-color: #326666;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+}
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+
 </style>
 <br><br>
 <section id="app" class="container-fluid dark-theme">
 
     <div class="row">
-        <div class="col">
+        <div class="col" style="margin-bottom: 1em;">
             <h1 class="dark-theme-text">Modelagem de processo</h1>
             <button type="button" class="btn btn-secondary">Abrir novo</button>
             <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal">
@@ -72,15 +95,33 @@
             <div id="canvas"  style="height: 600px;" @click="diagramEvent"></div>
         </div>
         <div class="col-3">
+          <div class="wrapper card">
+            <button type="button" class="btn btn-ming">
+              Notificações <span class="badge badge-light">[[ notificationsCount ]]</span>
+            </button>
+            <div v-for="(lane, key) in laneErrors" :key="key+'a'">
+              <div
+                v-for="(error, index) of laneErrors[key]" 
+                :key="index"
+                class="alert alert-danger alert-dismissible fade show" 
+                role="alert"
+              >
+                <strong>Agente: [[ key ]]</strong> [[ error ]]
+              </div>
+            </div>
+            <div 
+              v-for="(warning, key) in processErrors.missingTasks" 
+              :key="key+'a'" 
+              class="alert alert-warning alert-dismissible fade show" 
+              role="alert"
+            >
+              <strong>Tarefas faltando </strong> O processo pode ter a tarefa [[ warning.replace('_', ' ') ]]
+            </div>
+          </div>
           <!-- <h3 v-if="poolExist">Pool exist</h3>
           <h3 v-if="activityExist">activity exist</h3>
           <h3 v-if="laneExist">Lane exist</h3> -->
-          <div v-for="(lane, key) in laneErrors" :key="key+'a'">
-            <h3 class="dark-theme-text">Lane: [[key]]</h3>
-            <ul v-for="(error, index) of laneErrors[key]" :key="index">
-              <li><a style="color: crimson;">[[error]]</a></li>
-            </ul>
-          </div>
+
         </div>
     </div>
 </section>
@@ -109,6 +150,7 @@ var app = new Vue({
   el: '#app',
   data: {
     laneErrors: {},
+    processErrors:{  missingTasks:[] },
     debug: null,
     author: '',
     diagramXML: `<?xml version="1.0" encoding="UTF-8"?>
@@ -139,6 +181,15 @@ var app = new Vue({
     diagrams: [],
   },
   computed:{
+    notificationsCount() {
+      let count = this.processErrors.missingTasks.length || 0;
+      const lanes = Object.keys(this.laneErrors)
+      lanes.forEach( (lane) => {
+        count = count + this.laneErrors[lane].length;
+      });
+      return count;
+    },
+
     laneExist(){
       return this.diagramElements[diagram.LANE].length > 0
     },
@@ -147,6 +198,9 @@ var app = new Vue({
     },
     activityExist() {
       return this.diagramElements[diagram.ACTIVITY].length > 0
+    },
+    lanesWithErrors() {
+      return Object.keys(this.laneErrors);
     }
 
   },
@@ -184,10 +238,11 @@ var app = new Vue({
       this.updateDiagramElements()
       // entry bpmn-icon-task: caixinha pop up da task pra append nexttask
       // djs-direct-editing-content: menu lateral
+      this.resetErrors();
       if(element.target.className === "entry bpmn-icon-task" || element.target.className === "djs-direct-editing-content")
       {
         axios.post('/ontology-suggestion', { elements:this.diagramElements, eventTrigger: element}).then(response => {
-          this.response = response.data
+          this.processErrors.missingTasks = response.data.missingTasks
           this.validateTasks(response.data.tasksStatuses)
         }).catch( err => {
           console.error({err})
@@ -338,7 +393,8 @@ var app = new Vue({
         for (task of tasksStatuses[lane]) {
           let color = 'black'
           if (!task.ok) { 
-            this.laneErrors[lane] = [...this.laneErrors[lane],...task.fix]
+            console.log({ task });
+            this.laneErrors[lane] = [...this.laneErrors[lane], ...task.fix];
             color = 'red'
           }
           this.paintTask(task, color)
@@ -361,10 +417,13 @@ var app = new Vue({
         } 
         return '';
       }
-
       let trimmedText = '';
       text.forEach(word => { if(word.length)trimmedText = trimmedText + `${word} ` } );
       return trimmedText.trim();
+    },
+    resetErrors() {
+      this.processErrors.missingTasks = [];
+      this.laneErrors = [];
     },
   } //methods
 
