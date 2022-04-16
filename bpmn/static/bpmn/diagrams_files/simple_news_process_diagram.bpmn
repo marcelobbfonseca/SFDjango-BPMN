@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0rr9oxj" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="8.8.0">
   <bpmn:collaboration id="Collaboration_0oji9c0">
-    <bpmn:participant id="Participant_0a92hn4" name="processo da noticia" processRef="Process_0z8ptji" />
+    <bpmn:participant id="Participant_0a92hn4" name="produção da publicação" processRef="Process_0z8ptji" />
   </bpmn:collaboration>
   <bpmn:process id="Process_0z8ptji" isExecutable="false">
     <bpmn:laneSet id="LaneSet_0fhwxt0">

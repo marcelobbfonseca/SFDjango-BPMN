@@ -31,9 +31,8 @@ class NewsroomProcessUtils:
       return tasks
 
   def verify_task_author(self, author, task): 
-    # retorna true(ASK) e array correçao(SELECT) se tiver 
-    # import pdb; pdb.set_trace()
     predicate, obj = task['description'].split(' ')
+    
     query_string = "ASK {{ news:{} news:{} news:{} .}}".format(author, predicate, obj)
     is_true = self.graph.query(query_string, initNs={"news": self.newsroom_ontology.prefix})
     
@@ -44,7 +43,7 @@ class NewsroomProcessUtils:
     result = self.graph.query(query_string, initNs={
                          "news": self.newsroom_ontology.prefix})
     authors = [ str(row.author) for row in result]
-    return False, Ontology.remove_prefixes(authors)
+    return False, "Agente incorreto. Responsavel desta tarefa é {}".format(Ontology.remove_prefixes(authors)[0])
 
 
   def verify_tasks_by_lanes(self, lane_tasks):
@@ -55,16 +54,16 @@ class NewsroomProcessUtils:
         for task in lane_tasks[lane]:
             if len(task['description']) == 0: # verify if empty
               author_tasks = self.get_lane_tasks(lane)
-              verified_tasks[lane].append({'id':task['id'], 'ok':False, 'fix':author_tasks})
+              verified_tasks[lane].append({ 'id':task['id'], 'ok':False, 'fix':author_tasks })
               break
-
+            
             task_ok, fix = self.verify_task_author(lane, task)
             verified_tasks[lane].append({'id':task['id'], 'ok':task_ok, 'fix': fix })
 
     return verified_tasks
 
-  def verify_process_missing_tasks(self, laneTasks):
-    process_tasks = self.get_process_tasks('produção_da_publicação')
+  def verify_process_missing_tasks(self, process_name, laneTasks):
+    process_tasks = self.get_process_tasks(process_name)
     for lane in laneTasks:
         for task in laneTasks[lane]:
           for requiredTask in process_tasks:

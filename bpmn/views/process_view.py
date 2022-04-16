@@ -32,17 +32,19 @@ class OntologySuggestionView(View):
 
     def post(self,request, *args, **kwargs):
         body_unicode = request.body.decode('utf-8')
-        params = json.loads(body_unicode) # try
+        params = json.loads(body_unicode)
         result = {}
         newsroom_process_utils = NewsroomProcessUtils()
         if('elements' in params):
-            laneTasks = ProcessUtils.get_tasks_by_lane(params['elements'])
+            lane_tasks = ProcessUtils.get_tasks_by_lane(params['elements'])
         
             if(len(params['elements']['Lane'])):
-                result['tasksStatuses'] = newsroom_process_utils.verify_tasks_by_lanes(laneTasks)
+                result['tasksStatuses'] = newsroom_process_utils.verify_tasks_by_lanes(lane_tasks)
 
             if('Participant' in params['elements']):
-                result['missing_tasks'] = newsroom_process_utils.verify_process_missing_tasks(laneTasks)
+                participant = params['elements']['Participant']
+                process_name = participant[0]['name'].replace(' ','_')
+                result['missingTasks'] = newsroom_process_utils.verify_process_missing_tasks(process_name ,lane_tasks)
 
         return JsonResponse(result)
 

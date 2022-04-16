@@ -23,7 +23,7 @@ def bs_content(diagram_xml):
 @pytest.fixture(scope='module')
 def pool(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
-        pool = Pool.objects.create(name='processo da noticia')
+        pool = Pool.objects.create(name='produção da publicação')
     yield pool
     with django_db_blocker.unblock():
         pool.delete()
@@ -41,7 +41,7 @@ def groups(django_db_setup, django_db_blocker):
 @pytest.fixture(scope='module')
 def reporter_lane(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
-        pool = Pool.objects.create(name='processo da noticia')
+        pool = Pool.objects.create(name='produção da publicação')
         group = Group.objects.create(name='Reporter')
         lane = Lane.objects.create(name='reporter', pool=pool, responsable=group)
     yield lane 
@@ -51,7 +51,7 @@ def reporter_lane(django_db_setup, django_db_blocker):
 @pytest.fixture(scope='module')
 def editor_lane(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
-        pool = Pool.objects.create(name='processo da noticia')
+        pool = Pool.objects.create(name='produção da publicação')
         group = Group.objects.create(name='Editor')
         lane = Lane.objects.create(name='editor', pool=pool, responsable=group)
     yield lane 
@@ -86,13 +86,14 @@ def create_flow(django_db_setup, django_db_blocker):
 def test_create_pools(diagram_xml):
     parser = DiagramParserUtils(diagram_xml)
     pools = parser.create_pools()
+    import pdb;pdb.set_trace()
     assert len(pools) == 1
-    assert pools[0].name == 'processo da noticia'
+    assert pools[0].name == 'produção da publicação'
 
 def test_create_lanes(pool, diagram_xml, groups):
     groups
     parser = DiagramParserUtils(diagram_xml)
-    lanes = parser.create_lanes(pool) #
+    lanes = parser.create_lanes(pool) 
     assert len(lanes) == 2
 
 # def test_create_activities(diagram_xml, reporter_lane):

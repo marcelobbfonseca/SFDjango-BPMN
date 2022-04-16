@@ -41,7 +41,7 @@ def test_verify_task_wrong_author(domain_ontology, newsroom_process_utils):
     task = {"id":"04csnbg","description":"revisa matéria","x":350,"y":70}
     author = 'reporter'
     _, result = newsroom_process_utils.verify_task_author(author, task)
-    assert result[0] == "editor"
+    assert result == "Agente incorreto. Responsavel desta tarefa é editor"
 
 
 def test_get_lane_tasks(domain_ontology, newsroom_process_utils):
@@ -100,7 +100,7 @@ def test_verify_process_missing_tasks(domain_ontology, newsroom_process_utils):
             {'id': '0m5f9rd', 'description': 'publica matéria', 'x': 520, 'y': 200}
         ]
     }
-    missing_tasks = newsroom_process_utils.verify_process_missing_tasks(laneTasks)
+    missing_tasks = newsroom_process_utils.verify_process_missing_tasks('produção_da_publicação', laneTasks)
     assert len(missing_tasks) == 6
 
 def test_get_process_tasks(domain_ontology, newsroom_process_utils):
