@@ -10,7 +10,7 @@
 
 .app {
   text-align: center;
-  --color-1: #808080;
+  --color-1: #998da0;
   --color-2: #b5202e;
   --color-3: #ff9000;
   --color-4: #f9c19a; }
@@ -19,19 +19,21 @@
   width: 100%;
   height: 7rem;
   z-index: 1;
-  background-color: #808080;
+  background-color: #998da0;
   transition: all 0.1s ease-in-out;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   padding: 0.25rem 0.75rem;
-  position: fixed; }
+  position: fixed; 
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+
+}
   .app-header #opensidenav {
     font-size: 1.5rem;
     color: white;
     transition: all 0.1s ease-in-out; }
   .app-header a {
-    width: 100%;
     -webkit-tap-highlight-color: transparent; }
   .app-header .app-logo {
     width: 14rem;
@@ -40,11 +42,15 @@
     align-self: center;
     position: relative;
     bottom: 1rem;
-    transition: 0.1s ease-in-out; }
+    transition: 0.1s ease-in-out; 
+
+  }
+
+
 
 #app-header-scrolled {
   height: 4rem;
-  background-color: #808080; }
+  background-color: #998da0; }
   #app-header-scrolled span {
     padding-top: 0.5rem; }
   #app-header-scrolled a {
@@ -61,6 +67,7 @@
 #calendar-region {
   display: flex;
   justify-content: center; }
+  
 
 .addShadow {
   -webkit-box-shadow: 0px 0px 21px 0px rgba(0, 0, 0, 0.4);
@@ -74,7 +81,7 @@
   z-index: 2;
   top: 0;
   left: 0;
-  background-color: #808080;
+  background-color: #998da0;
   transition: 0.4s ease-in-out;
   transform: translateX(-75vw);
   padding: 0.45rem 0.5rem;
@@ -214,7 +221,7 @@ body .primary-button {
   left: 0;
   bottom: 0;
   width: 100%;
-  background-color: #808080;
+  background-color: #998da0;
   color: #fff;
   text-align: left; }
   .footer h4 {
@@ -226,7 +233,7 @@ body .primary-button {
 .preview {
   /* border: 2px solid #000; */
   margin: 15px -10px 0px -10px;
-  background-color: #808080;
+  background-color: #998da0;
   padding: 15px 10px; }
 
 .news-add h3, .key-login h3 {
@@ -253,7 +260,7 @@ button, .btn {
   margin-top: 15px;
   padding: 7px;
   font-weight: bold;
-  color: #808080;
+  color: #998da0;
   background-color: white;
   text-decoration: none;
   transition-duration: 0.3s;
@@ -264,7 +271,7 @@ button, .btn {
   background-color: #f9c19a; }
 
 .btn-link {
-  color: #808080; }
+  color: #998da0; }
 
 .btn-link:hover {
   color: #b5202e; }
@@ -272,7 +279,7 @@ button, .btn {
 #Adicionar:disabled {
   background-color: white;
   cursor: not-allowed;
-  color: #808080; }
+  color: #998da0; }
 
 #Adicionar:hover {
   background-color: #f9c19a;
@@ -432,10 +439,10 @@ button, .btn {
   .login-page br {
     display: none; }
   .login-page h2 {
-    color: #808080;
+    color: #998da0;
     margin: 0.5rem 0 3rem 0; }
   .login-page h3 {
-    color: #808080; }
+    color: #998da0; }
   .login-page form {
     height: 60%;
     display: flex;
@@ -478,7 +485,7 @@ button, .btn {
 /*################################### CSS DASHBOARD ###################################*/
 .section-title {
   text-align: center;
-  color: #808080;
+  color: #998da0;
   font-family: "Lato", sans-serif;
   margin-bottom: 0.5rem; }
 
@@ -493,7 +500,7 @@ button, .btn {
 .active-user {
   padding: 0.5rem; }
   .active-user h3 {
-    color: #808080;
+    color: #998da0;
     margin: 0.8rem 0; }
   .active-user .label {
     color: #696969;
@@ -513,7 +520,7 @@ button, .btn {
       font-size: 1.1rem;
       text-transform: uppercase;
       margin-left: 0.2rem;
-      color: #808080;
+      color: #998da0;
       font-family: "Lato", sans-serif; }
     .news-list ul .news-management p {
       margin: 0.5rem 0; }
@@ -532,7 +539,7 @@ button, .btn {
     font-family: "Lato", sans-serif;
     font-size: 1.1rem;
     text-transform: capitalize;
-    color: #808080; }
+    color: #998da0; }
   .users-list p {
     margin: 0.5rem 0; }
   .users-list hr {
@@ -542,7 +549,7 @@ button, .btn {
   justify-content: flex-start;
   height: auto; }
   .change-password .login-page h3 {
-    color: #808080;
+    color: #998da0;
     margin: 0.5rem 0 0.8rem 0; }
   .change-password .login-page .link {
     margin-top: 0.8rem; }

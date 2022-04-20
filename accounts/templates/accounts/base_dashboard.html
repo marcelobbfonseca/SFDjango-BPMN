@@ -62,7 +62,10 @@
       </header>
       <div class="app-header">
         <span id="opensidenav" onclick="openNav()">&#9776;</span>
-        <a href="{% url 'dashboard' %}"><img src="{% static 'bpmn/imagens/S-SMMS.png' %}" class="app-logo" alt="logo"></a>
+
+        <a href="{% url 'dashboard' %}" style="margin: auto;">
+          <img src="{% static 'bpmn/imagens/S-SMMS.png' %}" class="app-logo" alt="logo">
+        </a>
       </div>
       <div class="app-content">
         {% block content %}{% endblock %}
