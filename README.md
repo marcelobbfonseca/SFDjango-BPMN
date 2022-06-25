@@ -117,3 +117,42 @@ Responsável por ler um diagrama em linguagem `XML` e traduzir para a estrutura 
 
 ### class  NewsroomProcessUtils
 Responsável por concentrar as funcionalidades de apoio para a um processo. Faz acesso SPARQL na OWL do processo, executa as validações, consulta as tarefas de um **agente**, etc.
+
+## View
+
+### class  OntologySuggestionView(View)
+`POST /ontology-suggestion`
+Responsável pela validação do diagrama durante a modelagem do diagrama. Recebe os elementos do diagrama BPMN em modelagem e faz a validação de, se a tarefa executada pelo Agente certo e se o processo está em falta de alguma tarefa. Recebe parametros em `JSON` e retorna em `JSON`.
+
+### class ProcessModelingView(TemplateView)
+`GET /process-modeling/`
+Renderiza a tela de modelagem de diagrama(processo) `bpmn/process_modeling.html`.
+
+#### Template bpmn/process_modeling.html
+Durante a modelagem é feito a validação em tempo real através de eventos de click no canvas. O template utiliza das bibliotecas [bpmn.io](https://bpmn.io/), [Vue.js](https://vuejs.org/guide/introduction.html) e [Bootstrap 4](https://getbootstrap.com/docs/4.0/getting-started/introduction/) importadas via **cdn**. A validação é feita construindo a  `Array diagramElements` :
+1. Os eventos de click no diagrama chamam o metodo `diagramEvent()` ;
+2. dispara uma passagem pelo objeto `XML` que atualiza o this.diagramElements e reseta a lista de erros caso exista;
+3.  `updateDiagramElements()` atualiza `diagramElements` com os elementos BPMN encontrados no diagrama;
+4. Se o click for detectado dentro de uma tarefa ou na criação de uma tarefa nova, será chamada a rota `POST /ontology-suggestion` com o parametro `diagramElements`. Com a resposta é feito as validações e caso existam, serão notificadas na coluna de notificações;
+
+
+
+## Modelos Relacionais
+Mapeamento dos elementos do diagrama BPMN em entidades relacionais.
+Andamento do processo é acompanhado pelo ```process``` que aponta para a tarefa aonde o processo se encontra. `Group`
+
+```mermaid
+graph LR
+A[process_type] -- 1 N --> B[process]
+B -- 1 <current activity> 1 -->D[activity]
+A -- 1 N --> C[flow]
+E[pool] -- 1 N --> F[lane]
+F -- 1 1 --> G[Group:agente]
+F -- 1 N --> H[activity_type]
+H -- 1 1 --> D
+D -- N N --> I[sequence]
+I -- N N --> J[event]
+K{flows_sequences} -- N --> I
+K -- N --> C 
+```
+
