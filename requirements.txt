@@ -1,4 +1,4 @@
-python==3.7.13
+# python==3.7.13
 asgiref~=3.2.10
 astroid==2.*
 attrs==19.*
