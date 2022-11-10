@@ -1,5 +1,12 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
+
+Este trabalho foi patrocinado pela Fundação de Apoio à Pesquisa do Distrito Federal (FAP-DF), no âmbito do projeto “Sistemas de informações organizacionais flexíveis baseados em processos de negócios com orientação semântica contextual”; outorga SEI 00193-00000096 / 2019-78.
+
+This research has been sponsored by Fundação de Apoio à Pesquisa do Distrito Federal (FAP-DF), under the project “Flexible organizational information systems based on business processes with contextual semantic guidelines.” Grant Number SEI 00193-00000096/2019-78.
+
+
+
 # BPMN
 
 This project implements part of a semantic framework directed to Business Process Management Notation.
@@ -155,4 +162,5 @@ I -- N N --> J[event]
 K{flows_sequences} -- N --> I
 K -- N --> C 
 ```
+
 
